@@ -1,0 +1,208 @@
+body {
+            background: linear-gradient(135deg, rgba(139, 69, 19, 0.7), rgba(0, 0, 0, 0.6)), url('https://images.unsplash.com/photo-1512820790803-83ca734da794');
+            background-size: cover;
+            background-position: center;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: system-ui, -apple-system, sans-serif;
+            color: #333;
+            overflow: hidden;
+        }
+        .auth-container {
+            max-width: 480px;
+            width: 100%;
+            padding: 40px;
+            background: rgba(255, 245, 238, 0.9);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            transition: transform 0.4s ease, opacity 0.4s ease;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        .auth-container.loaded {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .auth-container:hover {
+            transform: translateY(-8px);
+        }
+        .form-title {
+            font-family: Georgia, serif;
+            color: #4a2c0b;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 2rem;
+        }
+        .form-control {
+            border-radius: 10px;
+            border: 1px solid #d2b48c;
+            background: #fffaf0;
+            padding: 12px;
+            transition: border-color 0.3s ease;
+        }
+        .form-control:focus {
+            box-shadow: 0 0 8px rgba(139, 69, 19, 0.4);
+            border-color: #8b4513;
+        }
+         .btn-primary {
+            background: linear-gradient(45deg, #8b4513, #a0522d);
+            border: none;
+            border-radius: 10px;
+            padding: 14px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+        .btn-primary:hover {
+            transform: scale(1.05);
+            background: linear-gradient(45deg, #a0522d, #8b4513);
+        }
+        .btn-primary::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.4s ease, height 0.4s ease;
+        }
+        .btn-primary:active::after {
+            width: 200px;
+            height: 200px;
+        }
+        .btn-google {
+            background: #fff;
+            border: 1px solid #d2b48c;
+            border-radius: 10px;
+            padding: 14px;
+            margin-top: 10px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: #4a2c0b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s ease, background 0.3s ease;
+        }
+        .btn-google:hover {
+            transform: scale(1.05);
+            background: #f8f1e9;
+        }
+        .btn-google img {
+            width: 24px;
+            margin-right: 10px;
+        }
+        .nav-link {
+            color: #8b4513;
+            font-weight: 600;
+            font-size: 0.95rem;
+            text-decoration: none;
+        }
+        .nav-link:hover {
+            text-decoration: underline;
+            color: #a0522d;
+        }
+        .error-message {
+            font-size: 0.9rem;
+            color: #dc3545;
+            text-align: center;
+            margin-top: 15px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            display: none;
+        }
+        .error-message.show {
+            opacity: 1;
+            display: block;
+        }
+        .logo {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .logo img {
+            width: 90px;
+            filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.3));
+            animation: pulse 2s infinite;
+        }
+        .password-wrapper {
+            position: relative;
+        }
+        
+        .password-toggle {
+            position: absolute;
+            right: 10px;
+            top: 70%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #8b4513;
+            font-size: 1rem;
+            padding: 8px;
+        }
+        .password-strength {
+            font-size: 0.85rem;
+            color: #6c757d;
+            text-align: left;
+            margin-top: 5px;
+            margin-bottom: 8px;
+            padding-left: 12px;
+            display: none;
+        }
+        .password-strength.weak { color: #dc3545; }
+        .password-strength.medium { color: #ffc107; }
+        .password-strength.strong { color: #28a745; }
+        .form-section {
+            display: none;
+        }
+        
+        .form-section.active {
+            display: block;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        .background-books {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.2;
+            animation: float 10s infinite ease-in-out;
+        }
+        @keyframes float {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0); }
+        }
+        @media (max-width: 576px) {
+            .auth-container {
+                margin: 20px;
+                padding: 25px;
+            }
+            .form-title {
+                font-size: 1.8rem;
+            }
+            .btn-primary {
+                padding: 12px;
+                font-size: 1rem;
+            }
+            .password-toggle {
+                right: 8px;
+                font-size: 0.9rem;
+            }
+        }
+
+        

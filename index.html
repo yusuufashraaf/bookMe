@@ -1,0 +1,95 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BookMe</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous">
+    <link rel="stylesheet" href="./login/style/style.css">
+    <link rel="stylesheet" href="./navBar/style/navBar.css" />
+
+    
+</head>
+<body>
+    <div class="background-books">
+        <img src="https://img.icons8.com/ios/100/ffffff/book-stack.png" style="position: absolute; top: 10%; left: 10%;">
+        <img src="https://img.icons8.com/ios/100/ffffff/book-stack.png" style="position: absolute; bottom: 10%; right: 10%;">
+    </div>
+    <div class="auth-container">
+        <div class="logo">
+            <img src="https://img.icons8.com/ios-filled/50/8b4513/book.png" alt="Bookshelf Logo">
+        </div>
+
+        <!-- Login Form -->
+        <div id="login-section" class="form-section active">
+            <h2 class="form-title">Welcome Back</h2>
+            <form id="login-form">
+                <div class="mb-3">
+                    <label for="login-email" class="form-label">Email Address</label>
+                    <input type="email" class="form-control" id="login-email" placeholder="Enter your email" required>
+                </div>
+                <div class="mb-3 password-wrapper position-relative">
+                    <label for="login-password" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="login-password" placeholder="Enter your password" required>
+                    <i class="fas fa-eye password-toggle" id="login-password-toggle"></i>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Sign In</button>
+                <button type="button" class="btn btn-google w-100" id="google-signin-btn">
+                    <img src="https://img.icons8.com/color/24/google-logo.png" alt="Google Logo">
+                    Sign in with Google
+                </button>
+                <p class="text-center mt-3">
+                    <a href="#" class="nav-link" id="forgot-password">Forgot Password?</a>
+                </p>
+                <p class="text-center mt-2">
+                    <a href="#" class="nav-link" id="to-register">New to BookMe? Create an Account</a>
+                </p>
+                <div id="login-error" class="error-message"></div>
+            </form>
+        </div>
+
+        <!-- Register Form -->
+        <div id="register-section" class="form-section">
+            <h2 class="form-title">Join BookMe</h2>
+            <form id="register-form">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="first-name" class="form-label">First Name</label>
+                        <input type="text" class="form-control" id="first-name" placeholder="Enter your first name" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="last-name" class="form-label">Last Name</label>
+                        <input type="text" class="form-control" id="last-name" placeholder="Enter your last name" required>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="register-email" class="form-label">Email Address</label>
+                    <input type="email" class="form-control" id="register-email" placeholder="Create your email" required>
+                </div>
+                <div class="mb-3 password-wrapper position-relative">
+                    <label for="register-password" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="register-password" placeholder="Create a password" required>
+                    <i class="fas fa-eye password-toggle" id="register-password-toggle"></i>
+                </div>
+                <div class="password-strength" id="password-strength"></div>
+                <button type="submit" class="btn btn-primary w-100" >Create Account</button>
+                <button type="button" class="btn btn-google w-100" id="google-signup-btn">
+                    <img src="https://img.icons8.com/color/24/google-logo.png" alt="Google Logo">
+                    Sign up with Google
+                </button>
+                <p class="text-center mt-3">
+                    <a href="#" class="nav-link" id="to-login">Already have an account? Sign In</a>
+                </p>
+                <div id="register-error" class="error-message"></div>
+            </form>
+        </div>
+    </div>
+    <script src="./login/script/script.js"></script>
+    <script type="module" src="firebase.js"></script>
+    <script type="module" src="./login/script/auth.js"></script>
+</body>
+</html>

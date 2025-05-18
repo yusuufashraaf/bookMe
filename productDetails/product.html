@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book Details</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet", href="./style/pStyle.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+  
+</head>
+<body>
+<div id="navbar-container"></div>
+
+  <div class="container mt-5">
+    <div class="row bg-white shadow rounded p-4">
+      <!-- Book Image -->
+      <div class="col-md-5 text-center">
+        <img src="../Home/imgs/Screenshot 2025-03-29 152147.png" alt="Book Image" class="book-image">
+      </div>
+
+      <!-- Book Details -->
+      <div class="col-md-7 book-details">
+        <h2 class="fw-bold mb-3"></h2>
+        <h5 class="text-success mb-3"></h5>
+        <p class="mb-2 category-text"></p>
+        <p class="mb-2 author-text"></p>
+        <p class="mb-2 description-text"></p>
+
+        <div class="mt-4">
+          <button class="btn btn-primary me-2 addtocart" id="addtocart">Add to Cart</button>
+           <span id="wishlistBtn" class="wishlist-heart" title="Add to wishlist">
+              <i class="fa-regular fa-heart"></i>
+           </span>
+          <!-- <button class="btn btn-outline-secondary" id="addtowishlist">Add to Wishlist</button> -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Related Books -->
+<div class="mt-5 position-relative text-center">
+  <h4 class="section-title mb-4">Related Books</h4>
+
+  <div class="d-flex justify-content-center align-items-center position-relative">
+    <!-- Left Arrow -->
+    <button id="scrollLeft" class="scroll-btn me-2">
+      <i class="bi bi-chevron-left"></i>
+    </button>
+
+    <!-- Container for scrollable area -->
+    <div class="related-books-container overflow-hidden" style="width: 800px;">
+      <div class="related-books d-flex gap-4 justify-content-center">
+        <!-- Cards get injected here -->
+      </div>
+    </div>
+
+    <!-- Right Arrow -->
+    <button id="scrollRight" class="scroll-btn ms-2">
+      <i class="bi bi-chevron-right"></i>
+    </button>
+  </div>
+</div>
+<!-- popup -->
+<div id="actionPopup" class="popup-overlay" style="display:none;">
+  <div class="popup-content">
+    <h4>Item Added Successfully!</h4>
+    <div class="book-info" style="display:flex; align-items:center; gap:15px; margin:15px 0;">
+      <img id="popupBookImage" src="" alt="Book Image" style="width:70px; height:100px; object-fit:cover; border-radius:8px; box-shadow:0 0 8px rgba(0,0,0,0.1);">
+      <div>
+        <p id="popupBookTitle" style="font-weight:bold; margin:0 0 5px 0;"></p>
+        <p id="popupTotalPrice" style="margin:0; color:#933100;"></p>
+      </div>
+    </div>
+    <div class="popup-buttons">
+      <button id="continueShopping">Continue Shopping</button>
+      <button id="goToCheckout">Go to Checkout</button>
+    </div>
+  </div>
+</div>
+
+<!-- wishlist popup -->
+   <div id="wishlistToast">
+    <i class="fa-solid fa-heart heart-icon" style="display: none; color: #933100;"></i>
+    <span>Book added to wishlist</span>
+  </div>
+
+    </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script type="module" src="../firebase.js"></script>
+  <script type="module" src="./script/proDetails.js"></script>
+
+</body>
+</html>

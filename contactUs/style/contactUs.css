@@ -1,0 +1,43 @@
+body {
+  background: linear-gradient(
+    135deg,
+    rgba(139, 69, 19, 0.7),
+    rgba(0, 0, 0, 0.6)
+  );
+}
+.form-control:focus {
+  border-color: #a2b9a7 !important;
+  box-shadow: 0 0 0 0.2rem rgba(162, 185, 167, 0.25) !important;
+  outline: none;
+}
+.contact-title {
+  color: #bb3e00;
+  margin-top: 50px;
+}
+
+.contact-form {
+  background-color: #f9f9f9;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+}
+
+.custom-button {
+  background-color: #657c6a !important;
+  border: none !important;
+  color: #fff !important;
+  padding: 10px 24px;
+  font-size: 16px;
+  font-weight: 500;
+  border-radius: 30px;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.custom-button:hover {
+  background-color: #a2b9a7 !important;
+  box-shadow: 0 4px 12px rgba(162, 185, 167, 0.4);
+}
+
+.nav-link{
+  cursor: pointer;
+}

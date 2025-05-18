@@ -1,0 +1,36 @@
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        user-select: none;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+
+      .checkout-title {
+        color: #BB3E00;
+      }
+
+      .custom-heading {
+        color: #A2B9A7;
+      }
+      .my-0{
+        color: #657C6A;
+      }
+
+      .custom-badge {
+        background-color: #A2B9A7;
+      }
+
+      .custom-button {
+        background-color: #A2B9A7;
+        border-color: #A2B9A7;
+        color: white;
+      }
+
+      .custom-button:hover {
+        background-color: #91a696;
+      }

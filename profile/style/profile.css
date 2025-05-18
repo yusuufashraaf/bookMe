@@ -1,0 +1,143 @@
+body {
+  background: linear-gradient(
+      135deg,
+      rgba(139, 69, 19, 0.7),
+      rgba(0, 0, 0, 0.6)
+    ),
+    url("https://images.unsplash.com/photo-1512820790803-83ca734da794");
+  background-size: cover;
+  background-position: center;
+  min-height: 100vh;
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  color: #333;
+  overflow-x: hidden;
+  display: flex;
+  padding-top: 70px; /* Added to push content below navbar */
+}
+
+.navbar-nav .nav-link {
+  font-weight: 500;
+  color: #657c6a;
+}
+.navbar-nav .nav-link:hover {
+  color: #a2b9a7;
+}
+.navbar-brand img {
+  border-radius: 8px;
+}
+
+.navbar-search {
+  max-width: 300px;
+}
+
+.navbar-search input {
+  border-radius: 20px 0 0 20px;
+}
+
+.navbar-search button {
+  border-radius: 0 20px 20px 0;
+  background-color: #657c6a;
+  color: white;
+  border: none;
+}
+
+.navbar-search button:hover {
+  background-color: #a2b9a7;
+}
+
+.nav-link {
+  cursor: pointer;
+}
+
+.sidebar {
+  width: 250px;
+  background: #4a2c0b;
+  color: #fffaf0;
+  height: 100vh;
+  position: fixed;
+  padding: 20px;
+  transition: transform 0.3s ease;
+  top: 70px; /* Added to place below fixed navbar */
+  z-index: 1001;
+}
+.btn-primary {
+  background: #8b4513;
+  border: none;
+  border-radius: 5px;
+}
+
+.sidebar .nav-item {
+  padding: 10px 15px;
+  color: #fffaf0;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  border-radius: 5px;
+}
+
+.sidebar .nav-item:hover,
+.nav-item.active {
+  background: #8b4513;
+}
+
+.content {
+  margin-left: 250px;
+  padding: 20px;
+  background: rgba(255, 245, 238, 0.9);
+  border-radius: 10px;
+  min-height: 100vh;
+  transition: opacity 0.4s ease;
+  opacity: 0;
+  width: 100%;
+}
+
+.content.loaded {
+  opacity: 1;
+}
+
+/* Fix navbar on top */
+.navbar {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1100; /* Above sidebar */
+}
+
+/* Responsive for mobile */
+@media (max-width: 768px) {
+  .sidebar {
+    transform: translateX(-250px);
+    position: fixed;
+    z-index: 1001;
+    top: 70px; /* Maintain below navbar */
+  }
+
+  .sidebar.active {
+    transform: translateX(0);
+  }
+
+  .content {
+    margin-left: 0;
+  }
+
+  .toggle-btn {
+    display: block;
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    z-index: 1100;
+    background: #8b4513;
+    border: none;
+    color: #fffaf0;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+}
+
+@media (min-width: 769px) {
+  .toggle-btn {
+    display: none;
+  }
+}

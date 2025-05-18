@@ -1,0 +1,136 @@
+    .cart-wrapper {
+        background-color: #f8f9fa;
+        min-height: 100vh;
+        padding: 40px 0;
+    }
+
+    main.cart {
+        padding: 40px 0;
+        background-color: #f8f9fa;
+    }
+
+    .product-card {
+        background: white;
+        border-radius: 12px;
+        transition: transform 0.2s;
+        border-left: 3px solid #BB3E00;
+    }
+
+    .product-card:hover {
+        transform: translateY(-2px);
+    }
+
+    .quantity-input {
+        width: 60px;
+        text-align: center;
+        border: 1px solid #dee2e6;
+        border-radius: 6px;
+    }
+
+    .product-image {
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+        border-radius: 8px;
+    }
+
+    .summary-card {
+        background: white;
+        border-radius: 12px;
+        position: sticky;
+        top: 20px;
+    }
+
+    .checkout-btn {
+        background: linear-gradient(135deg, #b75c2e, #BB3E00);
+        border: none;
+        transition: transform 0.2s;
+    }
+
+    .checkout-btn:hover {
+        transform: translateY(-2px);
+        background: linear-gradient(135deg, #a05735, #A03300);
+    }
+
+    .remove-btn {
+        color: #BB3E00;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .remove-btn:hover {
+        color: #8B2E00;
+    }
+
+    .quantity-btn {
+        width: 28px;
+        height: 28px;
+        padding: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 6px;
+        background: #A2B9A7;
+        color: #000;
+        border: none;
+        transition: all 0.2s;
+        font-weight: bold;
+    }
+
+    .quantity-btn:hover {
+        background: #657C6A;
+        color: white;
+    }
+
+    .discount-badge {
+        background: #dcfce7;
+        color: #657C6A;
+        font-size: 0.875rem;
+        padding: 4px 8px;
+        border-radius: 6px;
+    }
+
+    .btn-outline-secondary {
+        color: #657C6A;
+        border-color: #657C6A;
+    }
+
+    .btn-outline-secondary:hover {
+        background-color: #657C6A;
+        color: white;
+    }
+
+    .secure-div {
+        padding: 1rem 1rem 0;
+    }
+
+        /* MEDIA QUERIES */
+    @media (max-width: 768px) {
+        .product-image {
+            width: 80px;
+            height: 80px;
+    }
+
+    .product-card {
+        padding: 0.75rem !important;
+    }
+
+    .quantity-input {
+        width: 40px;
+        text-align: center;
+        border: 1px solid #dee2e6;
+        border-radius: 6px;
+        
+    }
+
+    .summary-card {
+        margin-top: 1rem;
+    }
+    }
+
+    @media (max-width: 576px) {
+        .product-image {
+            width: 70px;
+            height: 70px;
+        }
+    }
