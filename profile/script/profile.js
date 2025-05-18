@@ -77,7 +77,7 @@ export function navBarButton() {
       const page = target.getAttribute("data-target");
       const routes = {
         Home: "../Home/home.html",
-        wishList: "../Wishlist/wishlist.html",
+        wishList: "../wishlist/wishlist.html",
         cart: "../cart/cart.html",
         aboutUs: "../aboutUs/aboutUs.html",
         contactUs: "../contactUs/contactUs.html",
