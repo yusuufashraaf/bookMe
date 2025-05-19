@@ -5,7 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Checkout Form</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="./style/payment.css">
+    <style>
+      .checkout-title { color: #BB3E00; }
+      .custom-heading { color: #A2B9A7; }
+      .my-0 { color: #657C6A; }
+      .custom-badge { background-color: #A2B9A7; }
+      .custom-button {
+        background-color: #A2B9A7;
+        border-color: #A2B9A7;
+        color: white;
+      }
+      .custom-button:hover { background-color: #91a696; }
+    </style>
   </head>
   <body class="bg-light">
     <div class="container">
@@ -20,9 +31,7 @@
               <span>Your cart</span>
               <span class="badge rounded-pill custom-badge" id="cart-count">0</span>
             </h4>
-            <ul class="list-group mb-3" id="cart-items">
-
-            </ul>
+            <ul class="list-group mb-3" id="cart-items"></ul>
           </div>
 
           <div class="col-md-7 col-lg-8">
@@ -73,19 +82,16 @@
                     <small class="text-muted">Full name as displayed on card</small>
                     <div class="invalid-feedback">Name on card is required</div>
                   </div>
-
                   <div class="col-md-6">
                     <label for="cc-number" class="form-label">Credit card number</label>
                     <input type="text" class="form-control" id="cc-number" placeholder="0000 1111 2222 3333">
                     <div class="invalid-feedback">Credit card number is required</div>
                   </div>
-
                   <div class="col-md-3">
                     <label for="cc-expiration" class="form-label">Expiration</label>
                     <input type="text" class="form-control" id="cc-expiration" placeholder="MM/YY">
                     <div class="invalid-feedback">Expiration date required</div>
                   </div>
-
                   <div class="col-md-3">
                     <label for="cc-cvv" class="form-label">CVV</label>
                     <input type="text" class="form-control" id="cc-cvv" placeholder="CCC">
@@ -95,20 +101,112 @@
               </div>
 
               <hr class="my-4">
-
               <button class="w-100 btn btn-lg custom-button" type="submit">Continue to checkout</button>
             </form>
           </div>
         </div>
       </main>
 
-      <footer class="my-5 pt-5 text-muted text-center text-small">
-        <p class="mb-1">&copy; 2017–2025 Company Name</p>
-      </footer>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
 
-    <script src="./script/payment.js"> </script>
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
+      import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js";
+      import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
+
+      const firebaseConfig = {
+        apiKey: "YOUR_API_KEY",
+        authDomain: "YOUR_AUTH_DOMAIN",
+        projectId: "YOUR_PROJECT_ID",
+        storageBucket: "YOUR_STORAGE_BUCKET",
+        messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+        appId: "YOUR_APP_ID"
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const auth = getAuth(app);
+      const db = getFirestore(app);
+
+      const cartList = document.getElementById("cart-items");
+      const cartCount = document.getElementById("cart-count");
+
+      onAuthStateChanged(auth, async (user) => {
+        if (user) {
+          const q = query(collection(db, "cart"), where("userId", "==", user.uid));
+          const querySnapshot = await getDocs(q);
+
+          let total = 0;
+          let count = 0;
+          cartList.innerHTML = "";
+
+          querySnapshot.forEach((doc) => {
+            const item = doc.data();
+            total += Number(item.bookPrice);
+            count++;
+
+            const li = document.createElement("li");
+            li.className = "list-group-item d-flex justify-content-between lh-sm";
+            li.innerHTML = `
+              <div>
+                <h6 class="my-0">${item.bookTitle}</h6>
+                <small class="text-muted">${item.bookDescription}</small>
+              </div>
+              <span class="text-muted">${item.bookPrice} LE</span>
+            `;
+            cartList.appendChild(li);
+          });
+
+          const totalLi = document.createElement("li");
+          totalLi.className = "list-group-item d-flex justify-content-between";
+          totalLi.innerHTML = `<span>Total</span><strong>${total} LE</strong>`;
+          cartList.appendChild(totalLi);
+          cartCount.textContent = count;
+        } else {
+          alert("Please sign in to view your cart.");
+        }
+      });
+
+      // Validation & Payment field logic
+      const creditOption = document.getElementById('credit');
+      const cashOption = document.getElementById('cash');
+      const creditFields = document.getElementById('credit-card-fields');
+      const creditInputs = [
+        document.getElementById('cc-name'),
+        document.getElementById('cc-number'),
+        document.getElementById('cc-expiration'),
+        document.getElementById('cc-cvv')
+      ];
+
+      function toggleCreditFields() {
+        if (creditOption.checked) {
+          creditFields.style.display = 'block';
+          creditInputs.forEach(input => input.setAttribute('required', ''));
+        } else {
+          creditFields.style.display = 'none';
+          creditInputs.forEach(input => input.removeAttribute('required'));
+        }
+      }
+
+      creditOption.addEventListener('change', toggleCreditFields);
+      cashOption.addEventListener('change', toggleCreditFields);
+      window.addEventListener('load', toggleCreditFields);
+
+      // Bootstrap validation
+      (function () {
+        'use strict';
+        var forms = document.querySelectorAll('.needs-validation');
+        Array.prototype.slice.call(forms).forEach(function (form) {
+          form.addEventListener('submit', function (event) {
+            if (!form.checkValidity()) {
+              event.preventDefault();
+              event.stopPropagation();
+            }
+            form.classList.add('was-validated');
+          }, false);
+        });
+      })();
+    </script>
   </body>
 </html>
