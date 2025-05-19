@@ -20,39 +20,50 @@ const auth = getAuth();
 let currentUserId = null;
 
 // CONTROLLERS
-function decreaseCount(id) {
+async function decreaseCount(id) {
   const cartRef = doc(db, "cart", id);
 
-  getDoc(cartRef)
-    .then(async (docSnap) => {
-      if (docSnap.exists()) {
-        const data = docSnap.data();
-        const booksRef = collection(db, "books");
-        const q = query(booksRef, where("bookId", "==", data.bookId));
-        const querySnapshot = await getDocs(q);
-        // Check if the book exists in the books collection
-        if (!querySnapshot.empty) {
-          const bookDoc = querySnapshot.docs[0];
-          const bookRef = bookDoc.ref;
-          const bookData = bookDoc.data();
-          if (data.quantity > 1) {
-            // Decrease book quantity in cart
-            await updateDoc(cartRef, {
-              quantity: data.quantity - 1,
-            });
-            // Increase book stock
-            await updateDoc(bookRef, {
-              stock: bookData.stock + 1,
-            });
-          } else {
-            removeItem(id);
-          }
-        }
-      }
-    })
-    .catch((error) => {
-      console.error("Error decreasing quantity:", error);
-    });
+  try {
+    const cartDoc = await getDoc(cartRef);
+    if (!cartDoc.exists()) return;
+
+    const cartData = cartDoc.data();
+
+    // Get book reference to update stock
+    const booksRef = collection(db, "books");
+    const q = query(booksRef, where("bookId", "==", cartData.bookId));
+    const querySnapshot = await getDocs(q);
+
+    if (querySnapshot.empty) {
+      console.error("Book not found");
+      return;
+    }
+
+    const bookDoc = querySnapshot.docs[0];
+    const bookRef = bookDoc.ref;
+    const bookData = bookDoc.data();
+
+    if (cartData.quantity > 1) {
+      await updateDoc(cartRef, {
+        quantity: cartData.quantity - 1,
+      });
+
+      // Increase stock when quantity is decreased
+      await updateDoc(bookRef, {
+        stock: bookData.stock + 1,
+      });
+
+      console.log("Quantity decreased successfully");
+    } else {
+      // If quantity becomes 0, remove item and restore stock
+      await updateDoc(bookRef, {
+        stock: bookData.stock + 1,
+      });
+      await removeItem(id, true); // Pass true to avoid double stock update
+    }
+  } catch (error) {
+    console.error("Error decreasing quantity:", error);
+  }
 }
 
 async function increaseCount(id) {
@@ -72,16 +83,24 @@ async function increaseCount(id) {
       const bookDoc = querySnapshot.docs[0];
       const bookRef = bookDoc.ref;
       const bookData = bookDoc.data();
-      if ( bookData.stock !=0) {
-        console.log(cartData.quantity, bookData.stock);
+
+      console.log(
+        "Before increase - quantity:",
+        cartData.quantity,
+        "stock:",
+        bookData.stock
+      );
+
+      // Check if you can add 1 more without exceeding stock
+      if (bookData.stock !== 0) {
         await updateDoc(cartRef, {
           quantity: cartData.quantity + 1,
         });
 
         await updateDoc(bookRef, {
           stock: bookData.stock - 1,
-          
-        })
+        });
+
         console.log("Quantity increased successfully");
       } else {
         alert("No more books available");
@@ -89,22 +108,48 @@ async function increaseCount(id) {
     } else {
       console.error("Book not found");
     }
-
   } catch (error) {
     console.error("Error increasing quantity:", error);
   }
 }
 
-function removeItem(id) {
-  const cartRef = doc(db, "cart", id);
+async function removeItem(id, stockAlreadyUpdated = false) {
+  try {
+    const cartRef = doc(db, "cart", id);
+    const cartDoc = await getDoc(cartRef);
 
-  deleteDoc(cartRef)
-    .then(() => {
-      console.log("Item removed successfully");
-    })
-    .catch((error) => {
-      console.error("Error removing item:", error);
-    });
+    if (!cartDoc.exists()) {
+      console.error("Cart item not found");
+      return;
+    }
+
+    const cartData = cartDoc.data();
+
+    // Only update stock if it hasn't already been updated (for the case when called from decreaseCount)
+    if (!stockAlreadyUpdated) {
+      const booksRef = collection(db, "books");
+      const q = query(booksRef, where("bookId", "==", cartData.bookId));
+      const querySnapshot = await getDocs(q);
+
+      if (!querySnapshot.empty) {
+        const bookDoc = querySnapshot.docs[0];
+        const bookRef = bookDoc.ref;
+        const bookData = bookDoc.data();
+
+        // Return all items to stock
+        await updateDoc(bookRef, {
+          stock: bookData.stock + cartData.quantity,
+        });
+
+        console.log(`Returned ${cartData.quantity} items to stock`);
+      }
+    }
+
+    await deleteDoc(cartRef);
+    console.log("Item removed successfully");
+  } catch (error) {
+    console.error("Error removing item:", error);
+  }
 }
 
 function getSubTotalCost(cartItems) {
@@ -140,7 +185,12 @@ document.addEventListener("DOMContentLoaded", () => {
   fetch("../navBar/navbar.html")
     .then((res) => res.text())
     .then((html) => {
-      document.getElementById("navbar-container").innerHTML = html;
+      const processedHtml = html.replace(
+        /href="([^"]*\/style\/navBar.css)"/,
+        'href="../navBar/style/navBar.css"'
+      );
+
+      document.getElementById("navbar-container").innerHTML = processedHtml;
       navBarButton();
     })
     .catch((err) => console.error("Navbar load error:", err));
@@ -150,7 +200,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   document.querySelector(".continue-btn")?.addEventListener("click", () => {
-    window.location.href = `../Home/home.html?${currentUserId}`;
+    window.location.href = "../Home/home.html";
   });
 
   onAuthStateChanged(auth, (user) => {
