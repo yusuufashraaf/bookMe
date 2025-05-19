@@ -16,7 +16,7 @@ import {
   getAuth,
   onAuthStateChanged,
 } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
-import { navBarButton } from  "../../navBar/script/navBar.js";
+import { navBarButton } from "../../navBar/script/navBar.js";
 
 // Global variables
 const auth = getAuth();
@@ -106,7 +106,8 @@ async function initializeWishlistButton() {
 
     let wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
     const alreadyInWishlist = wishlist.some(
-      (item) => item.title === currentBook.title && item.userId === currentUserId
+      (item) =>
+        item.title === currentBook.title && item.userId === currentUserId
     );
 
     if (wishlistBtn.classList.contains("active")) {
@@ -121,7 +122,8 @@ async function initializeWishlistButton() {
       }
 
       wishlist = wishlist.filter(
-        (item) => !(item.title === currentBook.title && item.userId === currentUserId)
+        (item) =>
+          !(item.title === currentBook.title && item.userId === currentUserId)
       );
       localStorage.setItem("wishlist", JSON.stringify(wishlist));
 
@@ -171,7 +173,8 @@ function setupCartButton() {
 
       let localCart = JSON.parse(localStorage.getItem("cart")) || [];
       const itemIndex = localCart.findIndex(
-        (item) => item.bookId === currentBook.bookId && item.userId === currentUserId
+        (item) =>
+          item.bookId === currentBook.bookId && item.userId === currentUserId
       );
 
       if (itemIndex !== -1) {
@@ -190,6 +193,26 @@ function setupCartButton() {
 
 // Add to cart in Firestore
 async function addToCartInFirestore(item) {
+  // Get the current book stock
+  const booksRef = collection(db, "books");
+  const q = query(booksRef, where("bookId", "==", item.bookId));
+  const querySnapshot = await getDocs(q);
+
+  if (querySnapshot.empty) {
+    console.error("Book not found in database");
+    return;
+  }
+
+  const bookDoc = querySnapshot.docs[0];
+  const bookRef = bookDoc.ref;
+  const bookData = bookDoc.data();
+
+  // Check stock availability
+  if (bookData.stock <= 0) {
+    alert("Sorry, this book is out of stock!");
+    return;
+  }
+
   const cartDocId = `${currentUserId}_${item.bookId}`;
   const cartRef = doc(db, "cart", cartDocId);
   const snap = await getDoc(cartRef);
@@ -214,6 +237,11 @@ async function addToCartInFirestore(item) {
       addedAt: new Date(),
     });
   }
+
+  // Update book stock
+  await updateDoc(bookRef, {
+    stock: bookData.stock - 1,
+  });
 }
 
 // Load related books by category
@@ -244,9 +272,12 @@ async function loadRelatedBooks(category, currentId) {
 
 // Show popup
 async function showPopup(book) {
+  document.getElementById("popupBookImage").src = book.imageUrl;
   document.getElementById("popupBookTitle").innerText = book.title;
   const totalPrice = await calculateTotalPrice();
-  document.getElementById("popupTotalPrice").innerText = `Total Price in Cart: ${totalPrice} EGP`;
+  document.getElementById(
+    "popupTotalPrice"
+  ).innerText = `Total Price in Cart: ${totalPrice} EGP`;
   document.getElementById("actionPopup").style.display = "flex";
 }
 
