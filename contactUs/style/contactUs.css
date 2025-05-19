@@ -1,5 +1,6 @@
 body {
-  background-color: #4a2c0b !important;
+  background-color: #f8f9fa ;
+  font-family: 'Arial', sans-serif;
 }
 .form-control:focus {
   border-color: #a2b9a7 !important;
@@ -7,7 +8,7 @@ body {
   outline: none;
 }
 .contact-title {
-  color: #ffffff;
+  color: black;
   margin-top: 50px;
 }
 

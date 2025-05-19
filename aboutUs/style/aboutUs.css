@@ -1,9 +1,9 @@
 body {
-  background-color:#4a2c0b !important;
-
+  background-color: #f8f9fa;
+  font-family: 'Arial', sans-serif;
 }
 .about-title {
-  color: #ffffff;
+  color: black;
   margin-top: 50px;
 }
 
