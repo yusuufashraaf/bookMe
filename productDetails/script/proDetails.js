@@ -31,7 +31,6 @@ document.addEventListener("DOMContentLoaded", () => {
     .then((res) => res.text())
     .then((html) => {
       document.getElementById("navbar-container").innerHTML = html;
-      navBarButton();
     })
     .catch((err) => console.error("Navbar load error:", err));
 });
@@ -269,3 +268,4 @@ async function calculateTotalPrice() {
   });
   return total;
 }
+navBarButton();

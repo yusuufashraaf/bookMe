@@ -1,21 +1,12 @@
 import { getAllUsers, updateUser } from "../../firebase.js";
-import { 
-  getAuth, onAuthStateChanged 
+import {
+  getAuth,
+  onAuthStateChanged,
+  signOut,
 } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
 import { navBarButton } from "../../navBar/script/navBar.js";
 
-function getUserId() {
-  return new Promise((resolve) => {
-    const auth = getAuth();
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        resolve(user.uid); 
-      } else {
-        resolve(null); 
-      }
-    });
-  });
-}
+const auth = getAuth();
 
 // DOM Elements
 const emailInput = document.getElementById("emailInput");
@@ -23,9 +14,28 @@ const userNameInput = document.getElementById("usernameInput");
 const updateBtn = document.getElementById("updateButton");
 
 function isValidEmail(email) {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.(com)$/; 
+  const emailRegex = /^[^\s@]+@[^\s@]+\.(com)$/;
   return emailRegex.test(email);
 }
+
+function getUserId() {
+  return new Promise((resolve) => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        resolve(user.uid);
+      } else {
+        resolve(null);
+      }
+    });
+  });
+}
+
+// ✅ Protect page: Redirect if not logged in
+onAuthStateChanged(auth, (user) => {
+  if (!user) {
+    window.location.href = "../../index.html";
+  }
+});
 
 document.addEventListener("DOMContentLoaded", async () => {
   const editProfileBtn = document.getElementById("editProfileBtn");
@@ -40,11 +50,16 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   if (signOutBtn) {
-    signOutBtn.addEventListener("click", (e) => {
+    signOutBtn.addEventListener("click", async (e) => {
       e.preventDefault();
-      sessionStorage.clear();
-      localStorage.clear();
-      window.location.replace("../../index.html");
+      try {
+        await signOut(auth); // 👈 Proper Firebase sign out
+        sessionStorage.clear();
+        localStorage.clear();
+        window.location.replace("../../index.html");
+      } catch (error) {
+        console.error("Error signing out:", error);
+      }
     });
   }
 
