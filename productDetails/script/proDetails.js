@@ -205,6 +205,7 @@ onAuthStateChanged(auth, (user) => {
           author: currentBook.author,
           category: currentBook.category,
           price: currentBook.price,
+          bookId: currentBook.bookId,
           addedAt: new Date(),
         });
 
