@@ -1,33 +1,45 @@
-import { navBarButton } from "../../profile/script/profile.js";
-import { getAllUsers } from "../../profile/script/index.js";
+import { navBarButton } from "../../navBar/script/navBar.js";
+import { getAllUsers } from "../../firebase.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
 
-const params = new URLSearchParams(window.location.search);
-const id = params.get("id");
 const nameId = document.getElementById("name");
 const emailId = document.getElementById("email");
+
 document.addEventListener("DOMContentLoaded", () => {
-  fetch("../navBar/navbar.html")
-    .then((res) => {
-      return res.text();
-    })
-    .then((html) => {
+  fetch("../navBar/navbar.html")  
+    .then(response => response.text())
+    .then(html => {
       document.getElementById("navbar-container").innerHTML = html;
-      navBarButton();
+      if (typeof navBarButton === "function") navBarButton();
     })
-    .catch((err) => console.error("Navbar load error:", err));
+    .catch(err => console.error("Error loading navbar:", err));
 });
 
-getAllUsers().then((users) => {
-  const currentUser = users.find((user) => user.uid === id);
-  if (currentUser) {
-    console.log(currentUser);
-    nameId.value = currentUser.name;
-    emailId.value = currentUser.email;
-    nameId.disabled = true;
-    nameId.addEventListener("keydown", (e) => e.preventDefault());
-    nameId.addEventListener("focus", (e) => e.target.blur());
-    emailId.disabled = true;
-    emailId.addEventListener("keydown", (e) => e.preventDefault());
-    emailId.addEventListener("focus", (e) => e.target.blur());
+// Wait for Firebase Auth to get current user
+const auth = getAuth();
+onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    const uid = user.uid;
+    try {
+      const users = await getAllUsers();
+      const currentUser = users.find(u => u.uid === uid);
+      if (currentUser) {
+        nameId.value = currentUser.name;
+        emailId.value = currentUser.email;
+        nameId.disabled = true;
+        nameId.addEventListener("keydown", e => e.preventDefault());
+        nameId.addEventListener("focus", e => e.target.blur());
+        emailId.disabled = true;
+        emailId.addEventListener("keydown", e => e.preventDefault());
+        emailId.addEventListener("focus", e => e.target.blur());
+      }
+    } catch (error) {
+      console.error("Failed to get users:", error);
+    }
+  } else {
+    console.log("No user logged in");
+    
   }
 });
+
+navBarButton();

@@ -1,4 +1,4 @@
-import { navBarButton } from "../../profile/script/profile.js";
+import { navBarButton } from "../../navBar/script/navBar.js";
 import { db } from "../../firebase.js";
 import { 
   getDoc, updateDoc, doc, collection, query, where, onSnapshot, deleteDoc

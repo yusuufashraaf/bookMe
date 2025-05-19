@@ -1,4 +1,4 @@
-import { navBarButton } from "../../profile/script/profile.js";
+import { navBarButton } from "../../navBar/script/navBar.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   fetch("../navBar/navbar.html")

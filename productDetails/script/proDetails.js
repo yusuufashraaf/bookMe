@@ -15,7 +15,7 @@ import {
   getAuth,
   onAuthStateChanged,
 } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
-import { navBarButton } from "../../profile/script/profile.js";
+import { navBarButton } from "../../navBar/script/navBar.js";
 
 
 document.addEventListener("DOMContentLoaded", () => {

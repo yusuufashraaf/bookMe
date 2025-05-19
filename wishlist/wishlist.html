@@ -5,52 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Wishlist</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
-  <style>
-    .navbar-nav .nav-link {
-      font-weight: 500;
-      color: #657C6A;
-    }
-    .navbar-nav .nav-link:hover {
-      color: #A2B9A7;
-    }
-    .navbar-brand img {
-      border-radius: 8px;
-    }
-    .navbar-search {
-      max-width: 300px;
-    }
-    .navbar-search input {
-      border-radius: 20px 0 0 20px;
-    }
-    .navbar-search button {
-      border-radius: 0 20px 20px 0;
-      background-color: #657C6A;
-      color: white;
-      border: none;
-    }
-    .navbar-search button:hover {
-      background-color: #A2B9A7;
-    }
-    .wishlist-title {
-      color: #BB3E00;
-    }
-    .wishlist-count {
-      color: #657C6A;
-      font-weight: 500;
-      font-size: 1.2rem;
-    }
-    .card-title {
-      color: #657C6A;
-    }
-    .custom-button {
-      background-color: #A2B9A7;
-      border-color: #A2B9A7;
-      color: white;
-    }
-    .custom-button:hover {
-      background-color: #91a696;
-    }
-  </style>
+  <link rel="stylesheet" href="../wishlist/style/wishlist.css">
 </head>
 <body class="bg-light">
 
@@ -69,22 +24,22 @@
     <div class="collapse navbar-collapse justify-content-end" id="navbarNavDropdown">
       <ul class="navbar-nav">
         <li class="nav-item">
-          <a class="nav-link" href="home.html">Home</a>
+          <a class="nav-link" data-target="Home">Home</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link active" href="wishlist.html">Wishlist</a>
+          <a class="nav-link active" data-target="wishList">Wishlist</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="cart.html">Cart</a>
+          <a class="nav-link" data-target="cart">Cart</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="about.html">About Us</a>
+          <a class="nav-link" data-target="aboutUs">About Us</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="contact.html">Contact Us</a>
+          <a class="nav-link" data-target="contactUs">Contact Us</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="login.html">Sign Out</a>
+          <a class="nav-link" data-target="signOut">Sign Out</a>
         </li>
       </ul>
     </div>
@@ -99,55 +54,8 @@
     </div>
   </div>
 
-  <script>
-    const wishlistItems = [
-      {
-        title: "Book One",
-        description: "Description of Book One",
-        image: ""
-      },
-      {
-        title: "Book Two",
-        description: "Description of Book Two",
-        image: ""
-      },
-      {
-        title: "Book Three",
-        description: "Description of Book Three",
-        image: ""
-      },
-   {
-        title: "Book Four",
-        description: "Description of Book Four",
-        image: ""
-      }
-    ];
-
-    const wishlistContainer = document.getElementById("wishlist-container");
-    const wishlistCount = document.getElementById("wishlist-count");
-
-    function renderWishlist() {
-      wishlistContainer.innerHTML = "";
-      wishlistItems.forEach(item => {
-        wishlistContainer.innerHTML += `
-          <div class="col">
-            <div class="card h-100 shadow-sm">
-              <img src="${item.image}" class="card-img-top" alt="${item.title}">
-              <div class="card-body">
-                <h5 class="card-title">${item.title}</h5>
-                <p class="card-text text-muted">${item.description}</p>
-                <button class="btn custom-button w-100">Add to Cart</button>
-              </div>
-            </div>
-          </div>
-        `;
-      });
-      wishlistCount.textContent = wishlistItems.length;
-    }
-
-    document.addEventListener("DOMContentLoaded", renderWishlist);
-  </script>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script type="module" src="../wishlist/script/wishlist.js"></script>
 </body>
 </html>

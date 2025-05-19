@@ -1,5 +1,5 @@
 import { getAllBooks } from "../../firebase.js";
-import { navBarButton } from "../../profile/script/profile.js";
+import { navBarButton } from "../../navBar/script/navBar.js";
 
 const productList = document.getElementById("productList");
 const filterSelect = document.getElementById("filterOption");
@@ -8,13 +8,12 @@ const searchInput = document.getElementById("searchInput");
 const searchButton = document.getElementById("searchForm");
 const loader = document.getElementById("loader");
 const paginationContainer = document.getElementById("pagination");
-const params = new URLSearchParams(window.location.search);
-const ids = params.get("id");
 const itemsPerPage = 12;
 let currentPage = 1;
 let allProducts = [];
 
-// --- Fetch and initialize product data ---
+
+
 async function initializeProducts() {
   try {
     allProducts = await getAllBooks();
@@ -23,7 +22,6 @@ async function initializeProducts() {
   }
 }
 
-// --- Render products based on filters, sorting, and pagination ---
 function renderProducts(products) {
   productList.innerHTML = "";
 
@@ -45,7 +43,7 @@ function renderProducts(products) {
       <div class="card h-100">
         <a class="productLink" href=".././productDetails/product.html?bookId=${
           product.bookId
-        }&id=${ids}" target="_blank">
+        }" target="_blank">
           <img src="./imgs/Screenshot 2025-03-29 152147.png" class="card-img-top" alt="${escapeHTML(
             product.name
           )}" />
@@ -65,7 +63,6 @@ function renderProducts(products) {
   renderPaginationControls(totalPages);
 }
 
-// --- Pagination Helpers ---
 function getPaginatedItems(items, page, perPage) {
   const totalPages = Math.ceil(items.length / perPage);
   const start = (page - 1) * perPage;
@@ -92,7 +89,6 @@ function renderPaginationControls(totalPages) {
   }
 }
 
-// --- Filter logic ---
 function filterProducts(products, filterValue, searchText) {
   let filtered = products;
 
@@ -110,7 +106,6 @@ function filterProducts(products, filterValue, searchText) {
   return filtered;
 }
 
-// --- Sorting logic ---
 function sortProducts(products, sortValue) {
   if (sortValue === "Low to High") {
     return [...products].sort((a, b) => a.price - b.price);
@@ -120,7 +115,6 @@ function sortProducts(products, sortValue) {
   return products;
 }
 
-// --- Utility ---
 function pascalCase(str = "") {
   return str
     .split(" ")
@@ -150,7 +144,6 @@ function applyFiltersAndRender(resetPage = false) {
   renderProducts(sorted);
 }
 
-// --- Events ---
 filterSelect.addEventListener("change", () => applyFiltersAndRender(true));
 sortSelect.addEventListener("change", () => applyFiltersAndRender(true));
 searchButton.addEventListener("click", (e) => {
@@ -158,7 +151,6 @@ searchButton.addEventListener("click", (e) => {
   applyFiltersAndRender(true);
 });
 
-// --- Initial Load ---
 async function main() {
   loader.style.display = "block";
 
@@ -173,4 +165,4 @@ async function main() {
 }
 
 main();
-navBarButton();
+navBarButton()
