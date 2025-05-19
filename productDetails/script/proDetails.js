@@ -244,6 +244,7 @@ async function loadRelatedBooks(category, currentId) {
 
 // Show popup
 async function showPopup(book) {
+  document.getElementById("popupBookImage").src = book.imageUrl;
   document.getElementById("popupBookTitle").innerText = book.title;
   const totalPrice = await calculateTotalPrice();
   document.getElementById("popupTotalPrice").innerText = `Total Price in Cart: ${totalPrice} EGP`;
