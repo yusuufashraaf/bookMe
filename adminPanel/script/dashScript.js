@@ -18,6 +18,7 @@ const imageUrlInput = document.getElementById("book-image-url");
 const previewImg = document.getElementById("preview-img");
 const categorySelect = document.getElementById("book-category");
 
+
 const showAlert = (message, type = "success") => {
     alertBox.innerHTML = `
     <div class="alert alert-${type} alert-dismissible fade show" role="alert">
@@ -45,35 +46,44 @@ toggleBtn.addEventListener("click", () => {
     document.querySelector(".sidebar").classList.toggle("active");
 });
 
-
+//=======================================================================================
 //image
 
+imageInput.addEventListener("change", async () => {
+    const file = imageInput.files[0];
+    if (!file || !file.type.startsWith("image/")) {
+        previewImg.style.display = "none";
+        return alert("Please select a valid image file.");
+    }
 
-// imageInput.addEventListener("change", () => {
-//     const file = imageInput.files[0];
-//     if (file && file.type.startsWith("image/")) {
-//     const reader = new FileReader();
-//     reader.onload = () => {
-//         previewImg.src = reader.result;
-//         previewImg.style.display = "block";
-//     };
-//     reader.readAsDataURL(file);
-//     } else {
-//     previewImg.src = "";
-//     previewImg.style.display = "none";
-//     }
-// });
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", "book_images"); 
+    const cloudName = "dnv8yatga";
 
-imageUrlInput.addEventListener("input", () => {
-    const url = imageUrlInput.value.trim();
-    if (url && (url.startsWith("http://") || url.startsWith("https://"))) {
-    previewImg.src = url;
-    previewImg.style.display = "block";
-    } else {
-    previewImg.src = "";
-    previewImg.style.display = "none";
+    try {
+        const response = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+            method: "POST",
+            body: formData
+        });
+        const data = await response.json();
+
+        if (!response.ok || !data.secure_url) {
+            throw new Error("Upload failed.");
+        }
+        const imageUrl = data.secure_url;
+        document.getElementById("uploaded-image-url").value = imageUrl;
+
+        // previewImg.src = imageUrl;
+        previewImg.src = URL.createObjectURL(file);
+        previewImg.style.display = "block";
+    } catch (err) {
+        alert("Failed to upload image. Reason: " + (err.message || "Unknown error"));
     }
 });
+
+
+
 //=======================================================================================
 
     const insertSection = document.getElementById("insert-section");
@@ -116,7 +126,8 @@ addBookForm.addEventListener("submit", async (e) => {
     const description = document.getElementById("book-description").value.trim();
     const category = categorySelect.value;
     // const imageFile = imageInput.files[0];
-    const imageUrl = document.getElementById("book-image-url").value;
+    // const imageUrl = document.getElementById("book-image");
+    const imageUrl = document.getElementById("uploaded-image-url").value;
     const timestamp = Date.now();
     const bookId = `${title.toLowerCase().replace(/\s+/g, '-')}-${timestamp}`;
 
@@ -127,7 +138,8 @@ addBookForm.addEventListener("submit", async (e) => {
     if (isNaN(stock) || stock < 0) return showAlert("Stock must be a valid positive number.", "danger");
     if (!description || description.length < 10) return showAlert("Description must be at least 10 characters.", "danger");
     if (!category) return showAlert("Please select a book category.", "danger");
-    // if (!imageFile || !imageFile.type.startsWith("image/")) return showAlert("Please select a valid image file.", "danger");
+/*     if (!imageUrl || !imageUrl.type.startsWith("image/")) return showAlert("Please select a valid image file.", "danger");
+ */   
     if (!imageUrl || !(imageUrl.startsWith("http://") || imageUrl.startsWith("https://"))) {
     return showAlert("Please enter a valid image URL starting with http:// or https://", "danger");
     }
