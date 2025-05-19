@@ -59,11 +59,12 @@ async function fetchWishlist(userId) {
 
     querySnapshot.forEach((doc) => {
       const item = doc.data();
+      console.log(item);
       wishlistContainer.innerHTML += `
         <div class="col">
           <div class="card h-100 shadow-sm">
           <a href="../bookDetails/bookDetails.html?id=${item.bookId}" class="text-decoration-none">
-            <img src="${item.image || "https://via.placeholder.com/150"}" class="card-img-top" alt="${item.title}">
+            <img src="${item.imageUrl || "https://via.placeholder.com/150"}" class="card-img-top" alt="${item.title}">
             <div class="card-body">
               <h5 class="card-title">${item.title}</h5>
               <p class="card-text text-muted">${item.description}</p>

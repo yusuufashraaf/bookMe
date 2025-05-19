@@ -44,7 +44,7 @@ function renderProducts(products) {
         <a class="productLink" href=".././productDetails/product.html?bookId=${
           product.bookId
         }" target="_blank">
-          <img src="./imgs/Screenshot 2025-03-29 152147.png" class="card-img-top" alt="${escapeHTML(
+          <img src="${product.imageUrl}" class="card-img-top product-img" alt="${escapeHTML(
             product.name
           )}" />
         </a>

@@ -5,6 +5,13 @@ body {
     rgba(0, 0, 0, 0.6)
   );
 }
+.product-img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover; /* options: cover | contain | fill */
+  border-top-left-radius: 0.5rem; /* optional for rounded corners */
+  border-top-right-radius: 0.5rem;
+}
 
 .no-wrap {
   white-space: nowrap;

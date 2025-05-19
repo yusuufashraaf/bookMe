@@ -57,7 +57,7 @@ async function loadBookDetails() {
       alert("Book not found!");
       return;
     }
-
+    document.getElementsByClassName("book-image")[0].src = book.imageUrl;
     currentBook = book;
     document.querySelector("h2").innerText = book.title;
     document.querySelector("h5").innerText = `${book.price} EGP`;
@@ -137,6 +137,7 @@ async function initializeWishlistButton() {
           category: currentBook.category,
           price: currentBook.price,
           bookId: currentBook.bookId,
+          imageUrl: currentBook.imageUrl,
           addedAt: new Date(),
         });
 
@@ -229,7 +230,7 @@ async function loadRelatedBooks(category, currentId) {
       const book = docSnap.data();
       const card = document.createElement("div");
       card.className = "card shadow-sm related-book-card";
-      card.innerHTML = `<img alt="img" src="../Home/imgs/Screenshot 2025-03-29 152147.png">
+      card.innerHTML = `<img alt="img" src="${book.imageUrl}" class="card-img-top" />
                          <h5 class="card-title text-truncate mb-0">${book.title}</h5>
                          <h6>${book.author}</h6>
                          <p>${book.price} EGP</p>`;

@@ -53,3 +53,7 @@
     .custom-button:hover {
       background-color: #91a696;
     }
+
+    .nav-link{
+      cursor: pointer;
+    }
