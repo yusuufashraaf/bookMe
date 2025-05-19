@@ -8,11 +8,9 @@ const searchInput = document.getElementById("searchInput");
 const searchButton = document.getElementById("searchForm");
 const loader = document.getElementById("loader");
 const paginationContainer = document.getElementById("pagination");
-const itemsPerPage = 12;
+const itemsPerPage = 8;
 let currentPage = 1;
 let allProducts = [];
-
-
 
 async function initializeProducts() {
   try {
@@ -26,7 +24,8 @@ function renderProducts(products) {
   productList.innerHTML = "";
 
   if (!products.length) {
-    productList.innerHTML = `<p>No products found.</p>`;
+    productList.innerHTML = `<p style="color:white; font-size:1.7rem;">No products found.</p>`;
+    paginationContainer.innerHTML = "";  // Clear pagination buttons when no products
     return;
   }
 
@@ -165,4 +164,4 @@ async function main() {
 }
 
 main();
-navBarButton()
+navBarButton();

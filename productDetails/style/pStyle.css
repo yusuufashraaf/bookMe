@@ -6,7 +6,7 @@
 }
 
 body {
-  background-color: #ffffff;
+  background-color:#4a2c0b !important;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
@@ -260,7 +260,7 @@ body {
 }
 
 h4.section-title {
-  color: var(--main-color);
+  color: #ffffff;
   margin-bottom: 1rem;
 }
 

@@ -1,9 +1,5 @@
 body {
-  background: linear-gradient(
-    135deg,
-    rgba(139, 69, 19, 0.7),
-    rgba(0, 0, 0, 0.6)
-  );
+  background-color: #4a2c0b !important;
 }
 .form-control:focus {
   border-color: #a2b9a7 !important;
@@ -11,7 +7,7 @@ body {
   outline: none;
 }
 .contact-title {
-  color: #bb3e00;
+  color: #ffffff;
   margin-top: 50px;
 }
 
@@ -38,6 +34,6 @@ body {
   box-shadow: 0 4px 12px rgba(162, 185, 167, 0.4);
 }
 
-.nav-link{
+.nav-link {
   cursor: pointer;
 }

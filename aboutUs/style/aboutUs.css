@@ -1,12 +1,9 @@
 body {
-  background: linear-gradient(
-    135deg,
-    rgba(139, 69, 19, 0.7),
-    rgba(0, 0, 0, 0.6)
-  )!important;
+  background-color:#4a2c0b !important;
+
 }
 .about-title {
-  color: #bb3e00;
+  color: #ffffff;
   margin-top: 50px;
 }
 
