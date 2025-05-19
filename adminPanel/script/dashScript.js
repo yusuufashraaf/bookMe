@@ -303,15 +303,32 @@ document.getElementById('edit-cancel').addEventListener('click', () => {
 // Save Edited Book
 document.getElementById('save-book-changes').addEventListener('click', async () => {
     const bookId = document.getElementById('edit-book-id').value;
+    const title = document.getElementById('edit-book-title').value.trim();
+    const author = document.getElementById('edit-book-author').value.trim();
+    const category = document.getElementById('edit-book-category').value.trim();
+    const price = parseFloat(document.getElementById('edit-book-price').value);
+    const stock = parseInt(document.getElementById('edit-book-stock').value);
+    const description = document.getElementById('edit-book-description').value.trim();
+    const imageUrl = document.getElementById('edit-book-image-url').value.trim();
 
+    // Validation edit modal
+    if (!title || title.length < 5) return showAlertTable("Title must be at least 5 characters.", "danger");
+    if (!author || author.length < 3) return showAlertTable("Author must be at least 3 characters.", "danger");
+    if (!category) return showAlertTable("Category is required.", "danger");
+    if (isNaN(price) || price < 0) return showAlertTable("Price must be a valid positive number.", "danger");
+    if (isNaN(stock) || stock < 0) return showAlertTable("Stock must be a valid positive number.", "danger");
+    if (!description || description.length < 10) return showAlertTable("Description must be at least 10 characters.", "danger");
+    if (!imageUrl || !(imageUrl.startsWith("http://") || imageUrl.startsWith("https://"))) {
+        return showAlertTable("Please enter a valid image URL starting with http:// or https://", "danger");
+    }
     const updatedBook = {
-        title: document.getElementById('edit-book-title').value,
-        author: document.getElementById('edit-book-author').value,
-        category: document.getElementById('edit-book-category').value,
-        price: parseFloat(document.getElementById('edit-book-price').value),
-        stock: parseInt(document.getElementById('edit-book-stock').value),
-        description: document.getElementById('edit-book-description').value,
-        imageUrl: document.getElementById('edit-book-image-url').value.trim()
+        title,
+        author,
+        category,
+        price,
+        stock,
+        description,
+        imageUrl
     };
 
     try {
