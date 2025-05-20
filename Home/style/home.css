@@ -8,7 +8,10 @@ body {
   border-top-left-radius: 0.5rem;
   border-top-right-radius: 0.5rem;
 }
-
+.productLink{
+  text-decoration: none;
+  color: black;
+}
 .no-wrap {
   white-space: nowrap;
 }

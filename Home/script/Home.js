@@ -32,7 +32,7 @@ function renderProducts(products) {
   productList.innerHTML = "";
 
   if (!products.length) {
-    productList.innerHTML = `<p style="color:white; font-size:1.7rem;">No products found.</p>`;
+    productList.innerHTML = `<p style="color:black; font-size:1.7rem;">No products found.</p>`;
     paginationContainer.innerHTML = "";
     return;
   }
@@ -50,19 +50,20 @@ function renderProducts(products) {
       <div class="card h-100">
         <a class="productLink" href="../productDetails/product.html?bookId=${
           product.bookId
-        }" target="_blank">
+        }" >
           <img src="${
             product.imageUrl
           }" class="card-img-top product-img" alt="${escapeHTML(
       product.name
     )}" />
-        </a>
         <div class="card-body d-flex flex-column">
           <h5 class="card-title mb-1">${pascalCase(product.title)}</h5>
           <p class="mb-2 ellipsis">${escapeHTML(
             pascalCase(product.description)
           )}</p>
           <span class="price mt-auto">EGP ${product.price}</span>
+                  </a>
+
         </div>
       </div>
     `;

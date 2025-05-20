@@ -23,9 +23,6 @@ import {
 } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
 import {
   getStorage,
-  ref,
-  uploadBytes,
-  getDownloadURL,
 } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-storage.js";
 
 const firebaseConfig = {

@@ -6,10 +6,13 @@
 }
 
 body {
-  background-color:#4a2c0b !important;
+        background-color: #f8f9fa !important;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
+.section-title{
+  color: black !important;
 
+}
 .related-books {
   overflow-x: auto;
   white-space: nowrap;
