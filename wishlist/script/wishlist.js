@@ -55,7 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (typeof navBarButton === "function") navBarButton();
     })
-    .catch((err) => console.error("Error loading navbar:", err));
+    .catch((err) => {});
 });
 
 
@@ -83,11 +83,10 @@ async function fetchWishlist(userId) {
       wishlistContainer.innerHTML += `
         <div class="col">
           <div class="card h-100 shadow-sm">
-          <a href="../bookDetails/bookDetails.html?id=${item.bookId}" class="text-decoration-none">
+          <a href="../productDetails/product.html?bookId=${item.bookId}" class="text-decoration-none">
             <img src="${item.imageUrl || "https://via.placeholder.com/150"}" class="card-img-top" alt="${item.title}">
             <div class="card-body">
               <h5 class="card-title">${item.title}</h5>
-              <p class="card-text text-muted">${item.description}</p>
               </a>
             </div>
           </div>
