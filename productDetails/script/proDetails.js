@@ -43,9 +43,12 @@ document.addEventListener("DOMContentLoaded", () => {
 onAuthStateChanged(auth, async (user) => {
   if (user) {
     currentUserId = user.uid;
-    await loadBookDetails();
-    await initializeWishlistButton();
-    setupCartButton();
+     const book = await loadBookDetails(); 
+    if (book) {
+      await initializeWishlistButton(book); 
+      currentBook = book;
+      setupCartButton();
+    }
   } else {
     console.log("User not logged in");
     await loadBookDetails();
@@ -83,6 +86,7 @@ async function loadBookDetails() {
     }
 
     loadRelatedBooks(book.category, book.bookId);
+    return book;
   } catch (error) {
     console.error("Error loading book details:", error);
     alert("Failed to load book details.");
@@ -90,7 +94,7 @@ async function loadBookDetails() {
 }
 
 // Check and initialize wishlist button
-async function initializeWishlistButton() {
+async function initializeWishlistButton(currentBook) {
   const wishlistBtn = document.getElementById("wishlistBtn");
   const wishlistToast = document.getElementById("wishlistToast");
 
@@ -257,10 +261,15 @@ async function loadRelatedBooks(category, currentId) {
 
   const container = document.querySelector(".related-books");
   container.innerHTML = "";
+  const relatedTitle = document.getElementById("related-title"); 
+
+  let relatedCount = 0;
 
   snapshot.forEach((docSnap) => {
-    if (docSnap.id !== currentId) {
-      const book = docSnap.data();
+    // console.log("book.bookId", book.bookId, "currentId", currentId);
+    const book = docSnap.data();
+    if (book.bookId !== currentId) {
+      relatedCount++;
       const card = document.createElement("div");
       card.className = "card shadow-sm related-book-card";
       card.innerHTML = `<img alt="img" src="${book.imageUrl}" class="card-img-top" />
@@ -268,11 +277,16 @@ async function loadRelatedBooks(category, currentId) {
                          <h6>${book.author}</h6>
                          <p>${book.price} EGP</p>`;
       card.addEventListener("click", () => {
-        window.location.href = `product.html?bookId=${docSnap.id}`;
+        window.location.href = `product.html?bookId=${book.bookId}`;
       });
       container.appendChild(card);
     }
   });
+   if (relatedCount > 0) {
+    relatedTitle.style.display = "block";
+  } else {
+    relatedTitle.style.display = "none";
+  }
 }
 
 // Show popup
@@ -301,7 +315,7 @@ async function calculateTotalPrice() {
   let total = 0;
   snapshot.forEach((doc) => {
     const data = doc.data();
-    total += Number(data.price || 0);
+    total += Number(data.price || 0) * (data.quantity || 1);
   });
   return total;
 }
