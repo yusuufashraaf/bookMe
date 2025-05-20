@@ -1,9 +1,6 @@
-import { getAllBooks } from "../../firebase.js";
+import { getAllBooks, auth } from "../../firebase.js"; // import auth here
 import { navBarButton } from "../../navBar/script/navBar.js";
-import {
-  getAuth,
-  onAuthStateChanged,
-} from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
 
 const productList = document.getElementById("productList");
 const filterSelect = document.getElementById("filterOption");
@@ -17,7 +14,6 @@ const itemsPerPage = 8;
 let currentPage = 1;
 let allProducts = [];
 
-const auth = getAuth();
 onAuthStateChanged(auth, (user) => {
   if (!user) {
     window.location.replace("../../index.html");
@@ -175,4 +171,4 @@ async function main() {
 }
 
 main();
-navBarButton();
+navBarButton(auth);

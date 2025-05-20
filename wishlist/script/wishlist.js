@@ -32,6 +32,7 @@ const auth = getAuth(app);
 // Dynamically fetch wishlist for logged-in user
 onAuthStateChanged(auth, (user) => {
   if (user) {
+    console.log("User is logged in:", user);
     fetchWishlist(user.uid);
   } else {
     console.warn("User not logged in");
@@ -39,6 +40,25 @@ onAuthStateChanged(auth, (user) => {
     // window.location.href = "/login.html";
   }
 });
+
+document.addEventListener("DOMContentLoaded", () => {
+  fetch("../navBar/navbar.html")
+    .then((response) => response.text())
+    .then((html) => {
+      // Fix CSS link path inside navbar.html before inserting
+      const fixedHtml = html.replace(
+        /href="([^"]*\/style\/navBar.css)"/,
+        'href="../navBar/style/navBar.css"'
+      );
+
+      document.getElementById("navbar-container").innerHTML = fixedHtml;
+
+      if (typeof navBarButton === "function") navBarButton();
+    })
+    .catch((err) => console.error("Error loading navbar:", err));
+});
+
+
 
 async function fetchWishlist(userId) {
   const wishlistContainer = document.getElementById("wishlist-container");
@@ -83,4 +103,4 @@ async function fetchWishlist(userId) {
   }
 }
 
-navBarButton();
+navBarButton(auth);

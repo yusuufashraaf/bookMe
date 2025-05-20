@@ -52,7 +52,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     signOutBtn.addEventListener("click", async (e) => {
       e.preventDefault();
       try {
-        await signOut(auth); 
+        await signOut(auth);
         sessionStorage.clear();
         localStorage.clear();
         window.location.replace("../../index.html");
@@ -108,4 +108,4 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 });
 
-navBarButton();
+navBarButton(auth);

@@ -191,7 +191,7 @@ document.addEventListener("DOMContentLoaded", () => {
       );
 
       document.getElementById("navbar-container").innerHTML = processedHtml;
-      navBarButton();
+      navBarButton(auth);
     })
     .catch((err) => console.error("Navbar load error:", err));
 

@@ -2,6 +2,7 @@ body {
   background-color: #f8f9fa ;
   font-family: 'Arial', sans-serif;
 }
+
 .form-control:focus {
   border-color: #a2b9a7 !important;
   box-shadow: 0 0 0 0.2rem rgba(162, 185, 167, 0.25) !important;
@@ -35,6 +36,3 @@ body {
   box-shadow: 0 4px 12px rgba(162, 185, 167, 0.4);
 }
 
-.nav-link {
-  cursor: pointer;
-}

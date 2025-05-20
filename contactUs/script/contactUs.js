@@ -12,7 +12,14 @@ document.addEventListener("DOMContentLoaded", () => {
   fetch("../navBar/navbar.html")
     .then((response) => response.text())
     .then((html) => {
-      document.getElementById("navbar-container").innerHTML = html;
+      // Fix CSS link path inside navbar.html before inserting
+      const fixedHtml = html.replace(
+        /href="([^"]*\/style\/navBar.css)"/,
+        'href="../navBar/style/navBar.css"'
+      );
+
+      document.getElementById("navbar-container").innerHTML = fixedHtml;
+
       if (typeof navBarButton === "function") navBarButton();
     })
     .catch((err) => console.error("Error loading navbar:", err));
@@ -45,4 +52,4 @@ onAuthStateChanged(auth, async (user) => {
   }
 });
 
-navBarButton();
+navBarButton(auth);

@@ -30,7 +30,12 @@ document.addEventListener("DOMContentLoaded", () => {
   fetch("../navBar/navbar.html")
     .then((res) => res.text())
     .then((html) => {
-      document.getElementById("navbar-container").innerHTML = html;
+      const fixedHtml = html.replace(
+        /href="([^"]*\/style\/navBar.css)"/,
+        'href="../navBar/style/navBar.css"'
+      );
+
+      document.getElementById("navbar-container").innerHTML = fixedHtml;
     })
     .catch((err) => console.error("Navbar load error:", err));
 });
@@ -300,4 +305,4 @@ async function calculateTotalPrice() {
   });
   return total;
 }
-navBarButton();
+navBarButton(auth);
