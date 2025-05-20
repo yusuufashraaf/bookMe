@@ -1,12 +1,12 @@
 body {
   background-color: #f8f9fa;
-  font-family: 'Arial', sans-serif;
+  font-family: "Arial", sans-serif;
 }
 .product-img {
   width: 100%;
   height: 200px;
-  object-fit: cover; /* options: cover | contain | fill */
-  border-top-left-radius: 0.5rem; /* optional for rounded corners */
+  object-fit: cover;
+  border-top-left-radius: 0.5rem;
   border-top-right-radius: 0.5rem;
 }
 
@@ -15,7 +15,7 @@ body {
 }
 .sortDrop {
   max-width: 300px;
-  margin-left: 0; 
+  margin-left: 0;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -32,10 +32,10 @@ body {
 
 .filtering,
 .sorting {
-  font-size: 1rem; 
+  font-size: 1rem;
   white-space: nowrap;
   margin: 0;
-  color: black ;
+  color: black;
 }
 
 .card {
@@ -49,7 +49,6 @@ body {
   transform: translateY(-10px);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
 }
-
 
 .price {
   font-weight: bold;
@@ -74,13 +73,13 @@ body {
 .navbar-brand img {
   border-radius: 8px;
 }
-.search{
-    border-radius: 20px 0 0 20px;
+.search {
+  border-radius: 20px 0 0 20px;
   border: 1px solid #a2b9a7;
-  padding-left:20px ;
+  padding-left: 20px;
 }
 
-.btn  {
+.btn {
   border-radius: 0 20px 20px 0;
   background-color: #657c6a;
   color: white;
@@ -91,16 +90,13 @@ body {
   background-color: #a2b9a7;
 }
 
-
-/* Responsive fixes below */
 @media (max-width: 768px) {
-  .sortDrop,
-  .filterDrop {
-    max-width: 100% !important;
+  body .sortDrop,
+  body .filterDrop {
+    max-width: 100%;
     justify-content: center;
   }
   .navbar-search {
-    max-width: 100% !important;
     width: 100%;
     margin-bottom: 1rem;
   }

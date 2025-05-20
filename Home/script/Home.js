@@ -1,5 +1,9 @@
 import { getAllBooks } from "../../firebase.js";
 import { navBarButton } from "../../navBar/script/navBar.js";
+import {
+  getAuth,
+  onAuthStateChanged,
+} from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
 
 const productList = document.getElementById("productList");
 const filterSelect = document.getElementById("filterOption");
@@ -8,9 +12,17 @@ const searchInput = document.getElementById("searchInput");
 const searchButton = document.getElementById("searchForm");
 const loader = document.getElementById("loader");
 const paginationContainer = document.getElementById("pagination");
+
 const itemsPerPage = 8;
 let currentPage = 1;
 let allProducts = [];
+
+const auth = getAuth();
+onAuthStateChanged(auth, (user) => {
+  if (!user) {
+    window.location.replace("../../index.html");
+  }
+});
 
 async function initializeProducts() {
   try {
@@ -25,7 +37,7 @@ function renderProducts(products) {
 
   if (!products.length) {
     productList.innerHTML = `<p style="color:white; font-size:1.7rem;">No products found.</p>`;
-    paginationContainer.innerHTML = "";  // Clear pagination buttons when no products
+    paginationContainer.innerHTML = "";
     return;
   }
 
@@ -40,12 +52,14 @@ function renderProducts(products) {
     productItem.classList.add("col");
     productItem.innerHTML = `
       <div class="card h-100">
-        <a class="productLink" href=".././productDetails/product.html?bookId=${
+        <a class="productLink" href="../productDetails/product.html?bookId=${
           product.bookId
         }" target="_blank">
-          <img src="${product.imageUrl}" class="card-img-top product-img" alt="${escapeHTML(
-            product.name
-          )}" />
+          <img src="${
+            product.imageUrl
+          }" class="card-img-top product-img" alt="${escapeHTML(
+      product.name
+    )}" />
         </a>
         <div class="card-body d-flex flex-column">
           <h5 class="card-title mb-1">${pascalCase(product.title)}</h5>
@@ -62,13 +76,6 @@ function renderProducts(products) {
   renderPaginationControls(totalPages);
 }
 
-function getPaginatedItems(items, page, perPage) {
-  const totalPages = Math.ceil(items.length / perPage);
-  const start = (page - 1) * perPage;
-  const paginatedItems = items.slice(start, start + perPage);
-  return { items: paginatedItems, totalPages };
-}
-
 function renderPaginationControls(totalPages) {
   paginationContainer.innerHTML = "";
 
@@ -82,14 +89,14 @@ function renderPaginationControls(totalPages) {
     }`;
     btn.addEventListener("click", () => {
       currentPage = i;
-      applyFiltersAndRender(); // Do not reset page on click
+      applyFiltersAndRender();
     });
     paginationContainer.appendChild(btn);
   }
 }
 
 function filterProducts(products, filterValue, searchText) {
-  let filtered = products;
+  let filtered = [...products];
 
   if (filterValue && filterValue !== "None") {
     filtered = filtered.filter((product) => product.category === filterValue);
@@ -114,6 +121,13 @@ function sortProducts(products, sortValue) {
   return products;
 }
 
+function getPaginatedItems(items, page, perPage) {
+  const totalPages = Math.ceil(items.length / perPage);
+  const start = (page - 1) * perPage;
+  const paginatedItems = items.slice(start, start + perPage);
+  return { items: paginatedItems, totalPages };
+}
+
 function pascalCase(str = "") {
   return str
     .split(" ")
@@ -127,11 +141,8 @@ function escapeHTML(str = "") {
   return div.innerHTML;
 }
 
-// --- Core ---
 function applyFiltersAndRender(resetPage = false) {
-  if (resetPage) {
-    currentPage = 1;
-  }
+  if (resetPage) currentPage = 1;
 
   const filterValue = filterSelect.value;
   const sortValue = sortSelect.value;

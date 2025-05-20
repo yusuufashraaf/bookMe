@@ -208,7 +208,7 @@ document.addEventListener("DOMContentLoaded", () => {
       currentUserId = user.uid;
       loadCartItems();
     } else {
-      window.location.href = "../login/login.html";
+      window.location.href = "../../index.html";
     }
   });
 });

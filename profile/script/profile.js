@@ -30,7 +30,6 @@ function getUserId() {
   });
 }
 
-// ✅ Protect page: Redirect if not logged in
 onAuthStateChanged(auth, (user) => {
   if (!user) {
     window.location.href = "../../index.html";
@@ -53,7 +52,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     signOutBtn.addEventListener("click", async (e) => {
       e.preventDefault();
       try {
-        await signOut(auth); // 👈 Proper Firebase sign out
+        await signOut(auth); 
         sessionStorage.clear();
         localStorage.clear();
         window.location.replace("../../index.html");
