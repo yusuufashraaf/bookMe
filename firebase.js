@@ -10,6 +10,7 @@ import {
   doc,
   deleteDoc,
   updateDoc,
+  query, where
 } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-firestore.js";
 import {
   getAuth,
@@ -43,7 +44,7 @@ const storage = getStorage(app);
 export { db, auth, storage };
 
 // with email and password
-export async function signUp(email, password, name) {
+export async function signUp(email, password, name ) {
   try {
     const userCredential = await createUserWithEmailAndPassword(
       auth,
@@ -52,12 +53,21 @@ export async function signUp(email, password, name) {
     );
     const user = userCredential.user;
 
-    await addDoc(collection(db, "users"), {
-      uid: user.uid,
-      name: name,
-      email: email,
-      createdAt: new Date(),
-    });
+    // await addDoc(collection(db, "users"), {
+    //   uid: user.uid,
+    //   name: name,
+    //   email: email,
+    //   admin: email=="rha772207@gmail.com"?true:false,
+    //   createdAt: new Date(),
+    // });
+
+    await setDoc(doc(db, "users", user.uid), {
+    uid: user.uid,
+    name: name,
+    email: email,
+    admin: false,
+    createdAt: new Date(),
+});
     alert(`User signed up: ${user.email}`);
     window.location.href = "index.html";
   } catch (error) {
@@ -67,19 +77,30 @@ export async function signUp(email, password, name) {
 
 export async function loginUser(email, password) {
   try {
-    const userCredential = await signInWithEmailAndPassword(
-      auth,
-      email,
-      password
-    );
-    alert(" User logged in:" + userCredential.user.email);
-    if (userCredential.user.email == "rha772207@gmail.com") {
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
+    //get the user data
+    const userRef = doc(db, "users", user.uid);
+    const userSnap = await getDoc(userRef);
+    if (!userSnap.exists()) {
+      alert("User record not found in database.");
+      await signOut(auth);
+      return;
+    }
+
+    const userData = userSnap.data();
+    alert("User logged in: " + user.email);
+
+    if (userData.admin === true) {
       window.location.href = "./adminPanel/dashboard.html";
-    } else window.location.href = `./Home/home.html`;
+    } else {
+      window.location.href = "./Home/home.html";
+    }
   } catch (error) {
-    alert(" Login failed:" + error.code + error.message);
+    alert("Login failed: " + error.code + " " + error.message);
   }
 }
+
 //=========================================================================================
 
 //with google
@@ -98,6 +119,7 @@ export async function signUpWithGoogle() {
         uid: user.uid,
         name: user.displayName,
         email: user.email,
+        admin: false,
         createdAt: new Date(),
       });
       alert(`Welcome new user: ${user.displayName}`);
@@ -119,6 +141,9 @@ export async function signInWithGoogle() {
     const userRef = doc(db, "users", user.uid);
     const userSnap = await getDoc(userRef);
 
+    const userData = userSnap.data();
+
+
     if (!userSnap.exists()) {
       alert("Please sign up before signing in with this email.");
 
@@ -126,7 +151,7 @@ export async function signInWithGoogle() {
       return;
     } else {
       alert(`Welcome back: ${user.displayName}`);
-      if (user.email == "rha772207@gmail.com") {
+      if (user.admin == true) {
         window.location.href = "./adminPanel/dashboard.html";
       } else window.location.href = `./Home/home.html`;
     }
@@ -146,29 +171,6 @@ export async function addBook(bookData) {
     return { success: false, error };
   }
 }
-
-// export async function addBook(bookData, imageFile) {
-//   try {
-//     const docRef = await addDoc(collection(db, "books"), {
-//       ...bookData,
-//       createdAt: new Date()
-//     });
-
-//     const imageRef = ref(storage, `bookImages/${docRef.id}_${imageFile.name}`);
-//     await uploadBytes(imageRef, imageFile);
-//     const imageUrl = await getDownloadURL(imageRef);
-
-//     await addDoc(collection(db, "images"), {
-//       bookId: docRef.id,
-//       imageUrl,
-//       uploadedAt: new Date()
-//     });
-
-//     return { success: true, id: docRef.id, imageUrl };
-//   } catch (error) {
-//     return { success: false, error };
-//   }
-// }
 
 //==================================================================================
 //get books

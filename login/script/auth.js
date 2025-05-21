@@ -3,7 +3,7 @@ import { signUp } from "../../firebase.js";
 import { loginUser } from "../../firebase.js";
 
 import { signInWithGoogle } from "../../firebase.js";
-
+import { signUpWithGoogle } from "../../firebase.js";
         
         const loginForm = document.getElementById('login-form');
         const registerForm = document.getElementById('register-form');
@@ -88,4 +88,4 @@ import { signInWithGoogle } from "../../firebase.js";
     const googleSignUpBtn = document.getElementById('google-signup-btn');
 
 if (googleSignInBtn) googleSignInBtn.addEventListener('click', signInWithGoogle);
-if (googleSignUpBtn) googleSignUpBtn.addEventListener('click', signInWithGoogle);
+if (googleSignUpBtn) googleSignUpBtn.addEventListener('click', signUpWithGoogle);
