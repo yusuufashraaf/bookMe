@@ -1,4 +1,4 @@
-// Import Firebase functions and nav bar utility
+// Import Firebase functions and navbar utility
 import { getAllUsers, updateUser, getAllOrders } from "../../firebase.js";
 import {
   getAuth,
@@ -7,10 +7,10 @@ import {
 } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
 import { navBarButton } from "../../navBar/script/navBar.js";
 
-// Initialize Firebase auth
+// Initialize Firebase Auth
 const auth = getAuth();
 
-// Get references to DOM elements
+// DOM elements references
 const emailInput = document.getElementById("emailInput");
 const userNameInput = document.getElementById("usernameInput");
 const updateBtn = document.getElementById("updateButton");
@@ -22,51 +22,54 @@ const editProfileBtn = document.getElementById("editProfileBtn");
 const ordersBtn = document.getElementById("orders");
 const signOutBtn = document.getElementById("signOutBtn");
 
-// Validate email to end in .com
+// Validate email ends with .com
 const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.(com)$/.test(email);
 
-// Returns currently authenticated user's UID
+// Get current authenticated user's UID
 const getUserId = () =>
   new Promise((resolve) =>
     onAuthStateChanged(auth, (user) => resolve(user?.uid || null))
   );
 
-// Main script runs after DOM content is loaded
+// Main function after DOM loaded
 document.addEventListener("DOMContentLoaded", async () => {
   try {
-    // Load and insert navbar HTML, adjust CSS path
+    // Load and inject navbar HTML, fix CSS path
     const res = await fetch("../navBar/navbar.html");
     const html = await res.text();
     document.getElementById("navbar-container").innerHTML = html.replace(
       /href="([^"]*\/style\/navBar.css)"/,
       'href="../navBar/style/navBar.css"'
     );
-    navBarButton(auth); // Attach navbar logic
+    navBarButton(auth);
   } catch (err) {
     console.error("Navbar load error:", err);
   }
 
-  // Get current authenticated user's ID
+  // Get authenticated user ID
   const userId = await getUserId();
-  if (!userId) return (window.location.href = "../../index.html");
+  if (!userId) {
+    window.location.href = "../../index.html";
+    return;
+  }
 
-  // Get user info from DB
+  // Fetch all users and find current user data
   const allUsers = await getAllUsers();
   const currentUser = allUsers.find((user) => user.uid === userId);
   if (!currentUser) return;
 
-  // Populate form with current user's data
+  // Populate form inputs with user data
   emailInput.value = currentUser.email;
   userNameInput.value = currentUser.name;
 
-  // Handle "Profile" button click
+  // Sidebar button: Show Edit Profile section
   editProfileBtn?.addEventListener("click", (e) => {
     e.preventDefault();
     profileSection.style.display = "block";
     ordersSection.style.display = "none";
   });
 
-  // Handle "Orders" button click
+  // Sidebar button: Show Orders section and load orders
   ordersBtn?.addEventListener("click", async (e) => {
     e.preventDefault();
     profileSection.style.display = "none";
@@ -77,13 +80,12 @@ document.addEventListener("DOMContentLoaded", async () => {
       const { orders } = await getAllOrders();
       const userOrders = orders.filter((order) => order.userId === userId);
 
-      // Show message if no orders
       if (userOrders.length === 0) {
-        tableBody.innerHTML = `<tr><td colspan="3" class="text-center">No orders found.</td></tr>`;
+        tableBody.innerHTML =
+          '<tr><td colspan="3" class="text-center">No orders found.</td></tr>';
         return;
       }
 
-      // Insert order rows
       userOrders.forEach(({ id, items, total }) => {
         const itemsList = items.itemsName
           .map((item, i) => `${i + 1}. ${item || "-"}`)
@@ -92,7 +94,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           <tr>
             <td>${id}</td>
             <td>${itemsList}</td>
-            <td>${total || "0.00"}</td>
+            <td>${total ?? "0.00"}</td>
           </tr>`;
       });
     } catch (err) {
@@ -100,7 +102,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   });
 
-  // Handle sign out button
+  // Sign out button handler
   signOutBtn?.addEventListener("click", async (e) => {
     e.preventDefault();
     try {
@@ -113,9 +115,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   });
 
-  // Handle profile update form submit
+  // Update profile handler
   updateBtn?.addEventListener("click", async (e) => {
     e.preventDefault();
+
     const newEmail = emailInput.value.trim();
     const newName = userNameInput.value.trim();
 
@@ -132,8 +135,29 @@ document.addEventListener("DOMContentLoaded", async () => {
       return;
     }
 
-    // Update user in database
-    await updateUser(currentUser.id, { email: newEmail, name: newName });
-    alert("Profile updated!");
+    try {
+      await updateUser(currentUser.id, { email: newEmail, name: newName });
+      alert("Profile updated!");
+    } catch (err) {
+      console.error("Error updating profile:", err);
+      alert("Failed to update profile. Please try again.");
+    }
+  });
+});
+
+// Tooltip hover effect with 600ms hide delay
+const navItems = document.querySelectorAll(".sidebar .nav-item");
+let tooltipTimeout;
+
+navItems.forEach((item) => {
+  item.addEventListener("mouseenter", () => {
+    clearTimeout(tooltipTimeout);
+    navItems.forEach((i) => i.classList.remove("show-tooltip"));
+
+    item.classList.add("show-tooltip");
+
+    tooltipTimeout = setTimeout(() => {
+      item.classList.remove("show-tooltip");
+    }, 600);
   });
 });

@@ -1,3 +1,4 @@
+/* Global Styles */
 * {
   box-sizing: border-box;
 }
@@ -20,14 +21,24 @@ body {
   background-position: center;
 }
 
+/* Button Styles */
 .btnn {
   background-color: #8b4513;
   color: white;
   border: none;
   border-radius: 10px;
   padding: 6px 12px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
+.btnn:hover,
+.btnn:focus {
+  background-color: #6a3510;
+  outline: none;
+}
+
+/* Sidebar */
 .sidebar {
   position: fixed;
   top: 4.1rem;
@@ -42,13 +53,15 @@ body {
 }
 
 .sidebar .nav-item {
+  position: relative;
   display: flex;
   align-items: center;
   padding: 12px 1rem;
   text-decoration: none;
   color: #333;
   font-weight: 500;
-  transition: background-color 0.3s;
+  transition: background-color 0.3s, color 0.3s;
+  cursor: pointer;
 }
 
 .sidebar .nav-item:hover,
@@ -63,10 +76,36 @@ body {
 }
 
 .nav-text {
-  display: inline-block;
   color: #fff;
+  display: inline-block;
 }
 
+/* Tooltip (shown on hover with JS class) */
+.sidebar .nav-item::after {
+  content: attr(data-label);
+  position: absolute;
+  left: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: #8b4513;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 6px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  margin-left: 10px;
+  font-size: 14px;
+  z-index: 1001;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.sidebar .nav-item.show-tooltip::after {
+  opacity: 1;
+  transform: translateY(-50%) translateX(0);
+}
+
+/* Content Area */
 .content {
   margin-left: 250px;
   width: calc(100% - 250px);
@@ -81,6 +120,7 @@ body {
   opacity: 1;
 }
 
+/* Mobile Styles */
 @media (max-width: 768px) {
   .sidebar {
     width: 70px;
@@ -108,17 +148,18 @@ body {
   .toggle-btn {
     display: block;
     position: fixed;
-    background: transparent;
     top: 10px;
     left: 10px;
-    z-index: 1100;
+    background: transparent;
     border: none;
     padding: 10px;
     border-radius: 5px;
     cursor: pointer;
+    z-index: 1100;
   }
 }
 
+/* Desktop Toggle Button Hidden */
 @media (min-width: 769px) {
   .toggle-btn {
     display: none;
@@ -126,5 +167,9 @@ body {
 
   .content {
     width: calc(100% - 250px);
+  }
+
+  .sidebar .nav-item::after {
+    display: none;
   }
 }

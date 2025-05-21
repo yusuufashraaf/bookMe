@@ -10,38 +10,38 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
 
   <!-- Bootstrap Icons -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
 
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="./style/profile.css" />
+  <link href="./style/profile.css" rel="stylesheet" />
 </head>
 
 <body>
-  <!-- Navbar will be injected here -->
+  <!-- Navbar placeholder -->
   <div id="navbar-container"></div>
 
   <!-- Sidebar -->
-  <div class="sidebar">
-    <a class="nav-item" id="editProfileBtn">
+  <nav class="sidebar">
+    <a class="nav-item" id="editProfileBtn" data-label="Edit Profile" >
       <i class="bi bi-person"></i>
       <span class="nav-text">Profile</span>
     </a>
-    <a class="nav-item" id="orders">
+    <a class="nav-item" id="orders" data-label="View orders" >
       <i class="bi bi-receipt"></i>
       <span class="nav-text">Orders</span>
     </a>
-    <a class="nav-item" id="signOutBtn">
+    <a class="nav-item" id="signOutBtn" data-label="Sign Out" >
       <i class="bi bi-box-arrow-right"></i>
       <span class="nav-text">Sign Out</span>
     </a>
-  </div>
+  </nav>
 
   <!-- Main Content -->
-  <div class="content loaded" id="content">
+  <main class="content loaded" id="content">
     <!-- Edit Profile Section -->
-    <div class="container mt-4" id="edit-profile-section">
+    <section class="container mt-4" id="edit-profile-section">
       <h2>Edit Profile</h2>
-      <form id="profileForm" class="mt-3">
+      <form id="profileForm" class="mt-3" novalidate>
         <div class="mb-3">
           <label for="emailInput" class="form-label">Email address</label>
           <input type="email" class="form-control" id="emailInput" placeholder="Enter your email" required />
@@ -52,16 +52,16 @@
         </div>
         <button type="submit" class="btnn" id="updateButton">Update</button>
       </form>
-    </div>
+    </section>
 
     <!-- Orders Section -->
-    <div id="view-order-section" class="content-section" style="display: none;">
-      <h2 class="form-title">Orders</h2>
+    <section id="view-order-section" class="content-section" style="display: none;">
+      <h2>Orders</h2>
       <div class="table-responsive">
         <table class="table table-striped table-hover">
           <thead>
             <tr>
-              <th>OrderID</th>
+              <th>Order ID</th>
               <th>Items</th>
               <th>Total (EGP)</th>
             </tr>
@@ -69,8 +69,8 @@
           <tbody id="orders-table-body"></tbody>
         </table>
       </div>
-    </div>
-  </div>
+    </section>
+  </main>
 
   <!-- Scripts -->
   <script type="module" src="./script/profile.js"></script>
