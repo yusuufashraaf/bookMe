@@ -305,7 +305,7 @@ document.getElementById("continueShopping").addEventListener("click", () => {
 });
 
 document.getElementById("goToCheckout").addEventListener("click", () => {
-  window.location.href = "../payment/payment.html";
+  window.location.href = "../cart/cart.html";
 });
 
 // Total price calculator
