@@ -8,7 +8,7 @@ body {
   border-top-left-radius: 0.5rem;
   border-top-right-radius: 0.5rem;
 }
-.productLink{
+.productLink {
   text-decoration: none;
   color: black;
 }
@@ -92,8 +92,13 @@ body {
   border: none;
   margin-left: 10px;
 }
+
 .btn:hover {
   background-color: #a2b9a7;
+}
+
+button:active {
+  background-color: #a2b9a7 !important;
 }
 
 @media (max-width: 768px) {

@@ -1,4 +1,4 @@
-import { getAllBooks, auth } from "../../firebase.js"; // import auth here
+import { getAllBooks, auth } from "../../firebase.js"; 
 import { navBarButton } from "../../navBar/script/navBar.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
 

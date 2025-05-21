@@ -154,12 +154,11 @@ addBookForm.addEventListener("submit", async (e) => {
     price,
     stock,
     description,
-    imageUrl
+    imageUrl,
     };
 
     //add to Firebase
     const result = await addBook(bookData);
-
     if (result.success) {
     showAlert(`Book added successfully! ID: ${result.id}`, "success");
     addBookForm.reset();

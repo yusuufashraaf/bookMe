@@ -268,7 +268,7 @@ async function loadRelatedBooks(category, currentId) {
                          <h6>${book.author}</h6>
                          <p>${book.price} EGP</p>`;
       card.addEventListener("click", () => {
-        window.location.href = `product.html?bookId=${docSnap.id}`;
+        window.location.href = `product.html?bookId=${book.bookId}`;
       });
       container.appendChild(card);
     }
