@@ -8,7 +8,6 @@ import { navBarButton } from "../../navBar/script/navBar.js";
 
 const auth = getAuth();
 
-// DOM Elements
 const emailInput = document.getElementById("emailInput");
 const userNameInput = document.getElementById("usernameInput");
 const updateBtn = document.getElementById("updateButton");
@@ -39,12 +38,24 @@ onAuthStateChanged(auth, (user) => {
 document.addEventListener("DOMContentLoaded", async () => {
   const editProfileBtn = document.getElementById("editProfileBtn");
   const signOutBtn = document.getElementById("signOutBtn");
-  const content = document.getElementById("content");
+  const ordersBtn = document.getElementById("orders");
+
+  const profileSection = document.getElementById("edit-profile-section");
+  const ordersSection = document.getElementById("view-order-section");
 
   if (editProfileBtn) {
     editProfileBtn.addEventListener("click", (e) => {
       e.preventDefault();
-      content.classList.add("loaded");
+      profileSection.style.display = "block";
+      ordersSection.style.display = "none";
+    });
+  }
+
+  if (ordersBtn) {
+    ordersBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      profileSection.style.display = "none";
+      ordersSection.style.display = "block";
     });
   }
 
