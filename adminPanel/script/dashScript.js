@@ -5,6 +5,7 @@ import {  deleteBook } from '../../firebase.js';
 
 import {  updateBook } from '../../firebase.js';
 import { signOutUser } from '../../firebase.js'; 
+import { getAllOrders } from '../../firebase.js'; 
 
 document.addEventListener("DOMContentLoaded", () => {
 const content = document.getElementById("content");
@@ -88,9 +89,11 @@ imageInput.addEventListener("change", async () => {
 
     const insertSection = document.getElementById("insert-section");
     const viewSection = document.getElementById("view-section");
+    const viewordersection=document.getElementById("view-order-section");
 
     const showInsertBtn = document.getElementById("show-insert");
     const showViewBtn = document.getElementById("show-view");
+    const showOrderBtn = document.getElementById("show-orders");
 
     const navItems = document.querySelectorAll(".nav-item");
     function setActive(el) {
@@ -102,6 +105,7 @@ setActive(showInsertBtn);
     e.preventDefault();
     insertSection.style.display = "block";
     viewSection.style.display = "none";
+    viewordersection.style.display = "none";
     setActive(showInsertBtn);
     });
 
@@ -109,10 +113,19 @@ setActive(showInsertBtn);
     e.preventDefault();
     insertSection.style.display = "none";
     viewSection.style.display = "block";
+    viewordersection.style.display = "none";
     setActive(showViewBtn);
     await renderBooksTable(); 
 });
 
+showOrderBtn.addEventListener("click", async (e) => {
+    e.preventDefault();
+    insertSection.style.display = "none";
+    viewSection.style.display = "none";
+    viewordersection.style.display = "block";
+    setActive(showOrderBtn);
+    await renderOrdersTable(); 
+});
 
 //=======================================================================================
 //  form 
@@ -206,7 +219,7 @@ function createBookRow(book) {
         <td>${book.title}</td>
         <td>${book.author}</td>
         <td>${book.category}</td>
-        <td>$${book.price.toFixed(2)}</td>
+        <td>EGP${book.price.toFixed(2)}</td>
         <td>${book.stock}</td>
         <td>${description}</td>
         <td>${book.imageUrl ? `<img src="${book.imageUrl}" alt="${book.title}" style="max-width: 60px;">` : 'None'}</td>
@@ -366,6 +379,52 @@ document.getElementById("sign-out-btn").addEventListener("click", async (e) => {
 });
 
 });
+
+
+//======================================================================================
+//orders 
+async function renderOrdersTable() {
+const tableBody = document.getElementById("orders-table-body");
+tableBody.innerHTML = "<tr><td colspan='5'>Loading...</td></tr>";
+const result = await getAllOrders();
+if (!result.success) {
+    tableBody.innerHTML = `<tr><td colspan="5">Error loading orders: ${result.error.message}</td></tr>`;
+    return;
+}
+if (result.orders.length === 0) {
+    tableBody.innerHTML = `<tr><td colspan="5">No orders found.</td></tr>`;
+    return;
+}
+tableBody.innerHTML = "";
+result.orders.forEach(order => {
+    const row = createOrderRow(order);
+    tableBody.appendChild(row);
+});
+}
+
+
+function createOrderRow(order) {
+const row = document.createElement("tr");
+
+const itemsFormatted = Array.isArray(order.items?.itemName)
+? order.items.itemName.join(", ")
+: "No items";
+
+// const itemFormatted = order.items && typeof order.items === "object"
+// ? Object.entries(order.items.itemName)
+//     .map(([itemName]) => `${itemName} `)
+//     .join(", ")
+// : "No items";
+
+row.innerHTML = `
+    <td>${order.id}</td>
+    <td>${order.userId || "N/A"}</td>
+    <td>${order.userName || "N/A"}</td>
+    <td>${itemsFormatted}</td>
+    <td>EGP${order.total?.toFixed(2) || "0.00"}</td>
+`;
+return row;
+}
 
 
 

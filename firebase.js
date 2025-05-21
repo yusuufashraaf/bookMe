@@ -262,3 +262,18 @@ export async function updateUser(userId, updatedData) {
     console.error("Error updating user:", error);
   }
 }
+
+//===========================================================================================
+// get orders
+export async function getAllOrders() {
+  try {
+    const snapshot = await getDocs(collection(db, "orders"));
+    const orders = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+    return { success: true, orders };
+  } catch (error) {
+    return { success: false, error };
+  }
+}

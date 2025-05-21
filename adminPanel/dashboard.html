@@ -252,6 +252,7 @@
     <h5 class="mb-5 mt-3"><i class="fas fa-tachometer-alt mx-2"></i> Admin Panel</h5>
     <a href="#" class="nav-item"  id="show-insert"><i class="fas fa-plus"></i> Insert Books</a>
     <a href="#" class="nav-item"  id="show-view"><i class="fas fa-eye"></i> View Books</a>
+    <a href="#" class="nav-item"  id="show-orders"><i class="fas fa-shopping-bag"></i> View Orders</a>
     <a href="#" class="nav-item" id="sign-out-btn"><i class="fas fa-sign-out-alt"></i> Sign Out</a>
   </div>
 
@@ -313,7 +314,7 @@
   </select>
 </div>
       <div class="form-group mb-3">
-        <label for="book-price">Price ($)</label>
+        <label for="book-price">Price (EGP)</label>
         <input type="number" class="form-control" id="book-price" step="0.5" min="0" required>
       </div>
       <div class="form-group mb-3">
@@ -343,7 +344,7 @@
               <th>Title</th>
               <th>Author</th>
               <th>Category</th>
-              <th>Price ($)</th>
+              <th>Price (EGP)</th>
               <th>Stock</th>
               <th>Description</th>
               <th>Image</th>
@@ -356,6 +357,32 @@
         </table>
       </div>
     </div>
+
+
+
+    <!-- view orders -->
+    <div id="view-order-section" class="content-section" style="display: none;">
+      <h2 class="form-title">Orders</h2>
+      
+      <div id="borders-table-alert"></div>
+      <div class="table-responsive">
+        <table class="table table-striped table-hover">
+          <thead>
+            <tr>
+              <th>OrderID</th>
+              <th>UserID</th>
+              <th>User Name</th>
+              <th>Items</th>
+              <th>Total (EGP)</th>
+            </tr>
+          </thead>
+          <tbody id="orders-table-body">
+        
+          </tbody>
+        </table>
+      </div>
+    </div>
+</div>
 </div>
 
 
@@ -378,8 +405,8 @@
 
 
         <div class="mb-3">
-     <label for="edit-book-image-url" class="form-label">Image URL</label>
-       <input type="url" class="form-control" id="edit-book-image-url"  required>
+        <label for="edit-book-image-url" class="form-label">Image URL</label>
+        <input type="url" class="form-control" id="edit-book-image-url"  required>
     </div>
 
     <div id="edit-image-preview" style="margin-top: 10px; text-align: center;">
