@@ -85,6 +85,7 @@
                 <input id="cash" name="paymentMethod" type="radio" class="form-check-input" checked required>
                 <label class="form-check-label" for="cash">Cash On Delivery</label>
               </div>
+              
               <div class="form-check">
                 <input id="credit" name="paymentMethod" type="radio" class="form-check-input" required>
                 <label class="form-check-label" for="credit">Credit card</label>
@@ -114,7 +115,7 @@
 
                 <div class="col-md-3">
                   <label for="cc-cvv" class="form-label">CVV</label>
-                  <input type="text" class="form-control" id="cc-cvv" placeholder="CCC">
+                  <input type="text" class="form-control" id="cc-cvv" placeholder="123">
                   <div class="invalid-feedback">Security code required</div>
                 </div>
               </div>
@@ -154,19 +155,20 @@
     const cartCount = document.getElementById("cart-count");
 
     onAuthStateChanged(auth, async (user) => {
-      user = "2afa8hORK2TXFJUrTw6DMd9STsK2"
       if (user) {
-        const q = query(collection(db, "cart"), where("userId", "==", user));
+const q = query(collection(db, "cart"), where("userId", "==", user.uid));
         const querySnapshot = await getDocs(q);
 
         let total = 0;
         let count = 0;
+        let overallPrice = 0;
         cartList.innerHTML = "";
 
         querySnapshot.forEach((doc) => {
           const item = doc.data();
           total += Number(item.price);
           count++;
+         overallPrice += item.price * item.quantity
 
           const li = document.createElement("li");
           li.className = "list-group-item d-flex justify-content-between lh-sm";
@@ -174,14 +176,14 @@
             <div>
               <h6 class="my-0">${item.title}</h6>
             </div>
-            <span class="text-muted">${item.price} LE</span>
+            <span class="text-muted">${item.price * item.quantity} LE</span>
           `;
           cartList.appendChild(li);
         });
 
         const totalLi = document.createElement("li");
         totalLi.className = "list-group-item d-flex justify-content-between";
-        totalLi.innerHTML = `<span>Total</span><strong>${total} LE</strong>`;
+        totalLi.innerHTML = `<span>Total</span><strong>${overallPrice} LE</strong>`;
         cartList.appendChild(totalLi);
         cartCount.textContent = count;
       } else {
@@ -190,7 +192,7 @@
       }
     });
 
-    // Payment field toggle logic
+    
     const creditOption = document.getElementById('credit');
     const cashOption = document.getElementById('cash');
     const creditFields = document.getElementById('credit-card-fields');
@@ -204,9 +206,11 @@
     function toggleCreditFields() {
       if (creditOption.checked) {
         creditFields.style.display = 'block';
+        creditFields.classList.add('animate__fadeIn');
         creditInputs.forEach(input => input.setAttribute('required', ''));
       } else {
         creditFields.style.display = 'none';
+        creditFields.classList.remove('animate__fadeIn');
         creditInputs.forEach(input => input.removeAttribute('required'));
       }
     }
@@ -214,6 +218,24 @@
     creditOption.addEventListener('change', toggleCreditFields);
     cashOption.addEventListener('change', toggleCreditFields);
     window.addEventListener('load', toggleCreditFields);
+
+    // Input formatters
+    document.getElementById('cc-number').addEventListener('input', function (e) {
+      let value = e.target.value.replace(/\D/g, '').substring(0, 16);
+      e.target.value = value.replace(/(.{4})/g, '$1 ').trim();
+    });
+
+    document.getElementById('cc-expiration').addEventListener('input', function (e) {
+      let value = e.target.value.replace(/\D/g, '').substring(0, 4);
+      if (value.length >= 3) {
+        value = value.replace(/(\d{2})(\d{1,2})/, '$1/$2');
+      }
+      e.target.value = value;
+    });
+
+    document.getElementById('cc-cvv').addEventListener('input', function (e) {
+      e.target.value = e.target.value.replace(/\D/g, '').substring(0, 4);
+    });
 
     // Bootstrap validation
     (function () {
