@@ -1,38 +1,12 @@
 <!doctype html>
 <html lang="en">
-
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Checkout Form</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
-  <style>
-    .checkout-title {
-      color: #BB3E00;
-    }
-
-    .custom-heading {
-      color: #A2B9A7;
-    }
-
-    .my-0 {
-      color: #657C6A;
-    }
-
-    .custom-badge {
-      background-color: #A2B9A7;
-    }
-
-    .custom-button {
-      background-color: #A2B9A7;
-      border-color: #A2B9A7;
-      color: white;
-    }
-
-    .custom-button:hover {
-      background-color: #91a696;
-    }
-  </style>
+  <script src="https://www.paypal.com/sdk/js?client-id=AYlpcvUnNwcZpdWFiVbsiY8o_960wVRbhlJKt2vpBnnj-tJKmA870RVupqh0wDj04MrknET7uFlsln52&currency=USD"></script>
+<link rel="stylesheet" href="./style/payment.css">
 </head>
 
 <body class="bg-light">
@@ -52,77 +26,9 @@
         </div>
 
         <div class="col-md-7 col-lg-8">
-          <h4 class="mb-3 custom-heading">Delivery Address</h4>
-          <form class="needs-validation" novalidate>
-            <div class="row g-3">
-              <div class="col-md-5">
-                <label for="city" class="form-label">City</label>
-                <select class="form-select" id="city" required>
-                  <option value="">Choose...</option>
-                  <option>Cairo</option>
-                  <option>Giza</option>
-                  <option>Alexandria</option>
-                  <option>Aswan</option>
-                  <option>Luxor</option>
-                  <option>El Menya</option>
-                  <option>Suez</option>
-                </select>
-                <div class="invalid-feedback">Please select a valid city.</div>
-              </div>
-
-              <div class="col-12">
-                <label for="address" class="form-label">Address</label>
-                <input type="text" class="form-control" id="address" placeholder="123 Haram St" required>
-                <div class="invalid-feedback">Please enter your shipping address.</div>
-              </div>
-            </div>
-
+          <h4 class="mb-3 custom-heading">Delivery Data</h4>
             <hr class="my-4">
-
-            <h4 class="mb-3 custom-heading">Payment</h4>
-            <div class="my-3">
-              <div class="form-check">
-                <input id="cash" name="paymentMethod" type="radio" class="form-check-input" checked required>
-                <label class="form-check-label" for="cash">Cash On Delivery</label>
-              </div>
-              
-              <div class="form-check">
-                <input id="credit" name="paymentMethod" type="radio" class="form-check-input" required>
-                <label class="form-check-label" for="credit">Credit card</label>
-              </div>
-            </div>
-
-            <div id="credit-card-fields" style="display: none;">
-              <div class="row gy-3">
-                <div class="col-md-6">
-                  <label for="cc-name" class="form-label">Name on card</label>
-                  <input type="text" class="form-control" id="cc-name" placeholder="Mohamed Ahmed">
-                  <small class="text-muted">Full name as displayed on card</small>
-                  <div class="invalid-feedback">Name on card is required</div>
-                </div>
-
-                <div class="col-md-6">
-                  <label for="cc-number" class="form-label">Credit card number</label>
-                  <input type="text" class="form-control" id="cc-number" placeholder="0000 1111 2222 3333">
-                  <div class="invalid-feedback">Credit card number is required</div>
-                </div>
-
-                <div class="col-md-3">
-                  <label for="cc-expiration" class="form-label">Expiration</label>
-                  <input type="text" class="form-control" id="cc-expiration" placeholder="MM/YY">
-                  <div class="invalid-feedback">Expiration date required</div>
-                </div>
-
-                <div class="col-md-3">
-                  <label for="cc-cvv" class="form-label">CVV</label>
-                  <input type="text" class="form-control" id="cc-cvv" placeholder="123">
-                  <div class="invalid-feedback">Security code required</div>
-                </div>
-              </div>
-            </div>
-
-            <hr class="my-4">
-            <button class="w-100 btn btn-lg custom-button" type="submit">Continue to checkout</button>
+            <div id="paypal-button-container" class="mt-3"></div>
           </form>
         </div>
       </div>
@@ -135,7 +41,8 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js";
     import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
-
+    import { addOrder } from '../../firebase.js'; 
+    import { clearUserCart } from '../../firebase.js'; 
     const firebaseConfig = {
       apiKey: "AIzaSyCxY-KJ8H1m-9DO2_fs5qLo9MEwb7PiHVY",
       authDomain: "book-me-a6d98.firebaseapp.com",
@@ -146,7 +53,6 @@
       measurementId: "G-DEXMQ2FKFM",
     };
 
-
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
@@ -154,21 +60,19 @@
     const cartList = document.getElementById("cart-items");
     const cartCount = document.getElementById("cart-count");
 
+    let totalAmount = 0;
+
     onAuthStateChanged(auth, async (user) => {
       if (user) {
-const q = query(collection(db, "cart"), where("userId", "==", user.uid));
+        const q = query(collection(db, "cart"), where("userId", "==", user.uid));
         const querySnapshot = await getDocs(q);
 
-        let total = 0;
-        let count = 0;
         let overallPrice = 0;
         cartList.innerHTML = "";
 
         querySnapshot.forEach((doc) => {
           const item = doc.data();
-          total += Number(item.price);
-          count++;
-         overallPrice += item.price * item.quantity
+          overallPrice += item.price * item.quantity;
 
           const li = document.createElement("li");
           li.className = "list-group-item d-flex justify-content-between lh-sm";
@@ -185,41 +89,18 @@ const q = query(collection(db, "cart"), where("userId", "==", user.uid));
         totalLi.className = "list-group-item d-flex justify-content-between";
         totalLi.innerHTML = `<span>Total</span><strong>${overallPrice} LE</strong>`;
         cartList.appendChild(totalLi);
-        cartCount.textContent = count;
-      } else {
-        // No alert. Just skip loading cart.
-        console.log("No user signed in. Skipping cart display.");
+        cartCount.textContent = querySnapshot.size;
+
+        totalAmount = overallPrice;
+        renderPayPalButton(overallPrice);
       }
     });
-
-    
-    const creditOption = document.getElementById('credit');
-    const cashOption = document.getElementById('cash');
-    const creditFields = document.getElementById('credit-card-fields');
-    const creditInputs = [
-      document.getElementById('cc-name'),
-      document.getElementById('cc-number'),
-      document.getElementById('cc-expiration'),
-      document.getElementById('cc-cvv')
-    ];
-
-    function toggleCreditFields() {
-      if (creditOption.checked) {
-        creditFields.style.display = 'block';
-        creditFields.classList.add('animate__fadeIn');
-        creditInputs.forEach(input => input.setAttribute('required', ''));
-      } else {
-        creditFields.style.display = 'none';
-        creditFields.classList.remove('animate__fadeIn');
-        creditInputs.forEach(input => input.removeAttribute('required'));
-      }
-    }
 
     creditOption.addEventListener('change', toggleCreditFields);
     cashOption.addEventListener('change', toggleCreditFields);
     window.addEventListener('load', toggleCreditFields);
 
-    // Input formatters
+    // Input formatting
     document.getElementById('cc-number').addEventListener('input', function (e) {
       let value = e.target.value.replace(/\D/g, '').substring(0, 16);
       e.target.value = value.replace(/(.{4})/g, '$1 ').trim();
@@ -237,20 +118,88 @@ const q = query(collection(db, "cart"), where("userId", "==", user.uid));
       e.target.value = e.target.value.replace(/\D/g, '').substring(0, 4);
     });
 
-    // Bootstrap validation
-    (function () {
-      'use strict';
-      var forms = document.querySelectorAll('.needs-validation');
-      Array.prototype.slice.call(forms).forEach(function (form) {
-        form.addEventListener('submit', function (event) {
-          if (!form.checkValidity()) {
-            event.preventDefault();
-            event.stopPropagation();
-          }
-          form.classList.add('was-validated');
-        }, false);
-      });
-    })();
+    // Disable native submit
+    const form = document.getElementById('checkout-form');
+    form.addEventListener('submit', function (event) {
+      event.preventDefault();
+      event.stopPropagation();
+      form.classList.add('was-validated');
+    });
+
+    function renderPayPalButton(amount) {
+      if (!window.paypal) {
+        console.error("PayPal SDK not loaded");
+        return;
+      }
+      
+      paypal.Buttons({
+  style: {
+    layout: 'vertical',
+    color: 'black',
+    shape: 'rect',
+    label: 'pay',
+    tagline: false
+  },
+  fundingSource: paypal.FUNDING.CARD, 
+  createOrder: function (data, actions) {
+    return actions.order.create({
+      purchase_units: [{
+        amount: {
+          value: totalAmount.toFixed(2) 
+        }
+      }]
+    }); 
+  },
+ onApprove: async function (data, actions) {
+  return actions.order.capture().then(async function (details) {
+    alert('Transaction completed by ' + details.payer.name.given_name);
+
+    const user = auth.currentUser;
+    if (!user) {
+      alert('User not authenticated');
+      return;
+    }
+
+    const q = query(collection(db, "cart"), where("userId", "==", user.uid));
+    const querySnapshot = await getDocs(q);
+
+    const itemNames = [];
+    querySnapshot.forEach((doc) => {
+      const item = doc.data();
+      itemNames.push(item.title);
+    });
+
+    const orderData = {
+      orderAt: new Date(),
+      orderId: data.orderID,
+      userId: user.uid,
+      total: totalAmount,
+      items: {
+        count: querySnapshot.size,
+        itemsName: itemNames,
+      },
+      
+    };
+
+    try {
+      await addOrder(orderData); 
+      alert("Order placed successfully!");
+      await clearUserCart(user.uid);
+      window.location.href = '../Home/home.html';
+    } catch (error) {
+      console.error("Error saving order:", error);
+      alert("Failed to save order.");
+    }
+  });
+},
+  onError: function (err) {
+    console.error('PayPal error:', err);
+    alert('Payment failed');
+  }
+}).render('#paypal-button-container');
+
+
+    }
   </script>
 </body>
 

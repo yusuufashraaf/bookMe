@@ -10,7 +10,8 @@ import {
   doc,
   deleteDoc,
   updateDoc,
-  query, where
+  query, where,
+  orderBy, limit
 } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-firestore.js";
 import {
   getAuth,
@@ -264,16 +265,76 @@ export async function updateUser(userId, updatedData) {
 }
 
 //===========================================================================================
-// get orders
+// get orders only 20
 export async function getAllOrders() {
   try {
-    const snapshot = await getDocs(collection(db, "orders"));
-    const orders = snapshot.docs.map((doc) => ({
-      id: doc.id,
+    const ordersRef = collection(db, "orders");
+    const q = query(ordersRef, orderBy("orderAt", "desc"), limit(20));
+    const querySnapshot = await getDocs(q);
+
+    const orders = querySnapshot.docs.map(doc => ({
       ...doc.data(),
+      id: doc.id,
     }));
+
     return { success: true, orders };
   } catch (error) {
+    console.error("Error fetching orders:", error);
     return { success: false, error };
+  }
+}
+//=============================================================================================
+// add orders 
+export async function addOrder(orderData) {
+  try {
+    const docRef = await addDoc(collection(db, "orders"), orderData);
+    return { success: true, id: docRef.id };
+  } catch (error) {
+    return { success: false, error };
+  }
+}
+//==============================================================================================
+//get user name by id
+export async function getUserNameById(userId) {
+    if (!userId) return "N/A";
+    try {
+        const userRef = doc(db, "users", userId);
+        const userSnap = await getDoc(userRef);
+        if (userSnap.exists()) {
+            return userSnap.data().name || "Unnamed User";
+        } else {
+            return "User Not Found";
+        }
+    } catch (error) {
+        console.error("Error fetching user:", error);
+        return "Error";
+    }
+}
+//========================================================================================
+//clear user cart after payment
+export async function clearUserCart(userId) {
+  if (!userId) {
+    console.error("clearUserCart: userId is missing.");
+    return;
+  }
+
+  try {
+    const cartRef = collection(db, "cart");
+    const q = query(cartRef, where("userId", "==", userId));
+    const snapshot = await getDocs(q);
+
+    if (snapshot.empty) {
+      console.log("clearUserCart: No cart items found for user.");
+      return;
+    }
+
+    for (const docSnap of snapshot.docs) {
+      await deleteDoc(docSnap.ref);
+    }
+
+    console.log("clearUserCart: Cart cleared successfully.");
+  } catch (error) {
+    console.error("clearUserCart: Failed to clear cart:", error);
+    throw error;
   }
 }

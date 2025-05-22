@@ -7,6 +7,8 @@ import {  updateBook } from '../../firebase.js';
 import { signOutUser } from '../../firebase.js'; 
 import { getAllOrders } from '../../firebase.js'; 
 
+import { getUserNameById } from '../../firebase.js'; 
+
 document.addEventListener("DOMContentLoaded", () => {
 const content = document.getElementById("content");
 const addBookForm = document.getElementById("add-book-form");
@@ -384,47 +386,46 @@ document.getElementById("sign-out-btn").addEventListener("click", async (e) => {
 //======================================================================================
 //orders 
 async function renderOrdersTable() {
-const tableBody = document.getElementById("orders-table-body");
-tableBody.innerHTML = "<tr><td colspan='5'>Loading...</td></tr>";
-const result = await getAllOrders();
-if (!result.success) {
-    tableBody.innerHTML = `<tr><td colspan="5">Error loading orders: ${result.error.message}</td></tr>`;
-    return;
-}
-if (result.orders.length === 0) {
-    tableBody.innerHTML = `<tr><td colspan="5">No orders found.</td></tr>`;
-    return;
-}
-tableBody.innerHTML = "";
-result.orders.forEach(order => {
-    const row = createOrderRow(order);
-    tableBody.appendChild(row);
-});
-}
+    const tableBody = document.getElementById("orders-table-body");
+    tableBody.innerHTML = "<tr><td colspan='5'>Loading...</td></tr>";
 
+    const result = await getAllOrders();
+    if (!result.success) {
+        tableBody.innerHTML = `<tr><td colspan="5">Error loading orders: ${result.error.message}</td></tr>`;
+        return;
+    }
 
-function createOrderRow(order) {
-const row = document.createElement("tr");
+    if (result.orders.length === 0) {
+        tableBody.innerHTML = `<tr><td colspan="5">No orders found.</td></tr>`;
+        return;
+    }
 
-const itemsFormatted = Array.isArray(order.items?.itemName)
-? order.items.itemName.join(", ")
+    tableBody.innerHTML = "";
+
+    for (const order of result.orders) {
+        const userName = await getUserNameById(order.userId);
+        const row = createOrderRow(order, userName);
+        tableBody.appendChild(row);
+    }
+}
+//order row
+function createOrderRow(order, userName) {
+    const row = document.createElement("tr");
+
+    const itemsFormatted = Array.isArray(order.items?.itemsName)
+? order.items.itemsName.join(", ")
 : "No items";
-
-// const itemFormatted = order.items && typeof order.items === "object"
-// ? Object.entries(order.items.itemName)
-//     .map(([itemName]) => `${itemName} `)
-//     .join(", ")
-// : "No items";
-
-row.innerHTML = `
-    <td>${order.id}</td>
-    <td>${order.userId || "N/A"}</td>
-    <td>${order.userName || "N/A"}</td>
-    <td>${itemsFormatted}</td>
-    <td>EGP${order.total?.toFixed(2) || "0.00"}</td>
-`;
-return row;
+    row.innerHTML = `
+        <td>${order.orderId}</td>
+        <td>${order.userId || "N/A"}</td>
+        <td>${userName}</td>
+        <td>${itemsFormatted}</td>
+        <td>EGP${order.total?.toFixed(2) || "0.00"}</td>
+    `;
+    return row;
 }
+
+
 
 
 
