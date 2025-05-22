@@ -10,61 +10,37 @@
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light px-3 py-2 shadow-sm">
-        <a class="navbar-brand">
-            <img src="https://cdn-icons-png.flaticon.com/512/29/29302.png" alt="Logo" width="40" height="40" />
-        </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
-            aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <div class="collapse navbar-collapse" id="navbarNavDropdown">
-            <form class="d-flex my-2 my-lg-0 mx-lg-3 w-100 w-lg-auto" role="search" id="searchForm">
-                <input class="search" type="search" id="searchInput" placeholder="Search" aria-label="Search" />
-                <button class="btn" id="searchBtn" type="submit">Search</button>
-            </form>
-            <ul class="navbar-nav align-items-lg-center">
-                <li class="nav-item"><a class="nav-link" data-target="profileHTML">Profile</a></li>
-                <li class="nav-item"><a class="nav-link" data-target="wishList">Wishlist</a></li>
-                <li class="nav-item"><a class="nav-link" data-target="cart">Cart</a></li>
-                <li class="nav-item"><a class="nav-link no-wrap" data-target="aboutUs">About Us</a></li>
-                <li class="nav-item"><a class="nav-link no-wrap" data-target="contactUs">Contact Us</a></li>
-                <li class="nav-item"><a class="nav-link no-wrap" data-target="signOut">Sign Out</a></li>
-            </ul>
-        </div>
-    </nav>
+    <div id="navbar-container"></div>
 
     <div class="container my-4">
-        <div class="row mb-3 g-3 justify-content-center">
-            <div class="col-12 col-md-6 filterDrop">
-                <label for="filterOption" class="form-label fw-semibold small text-muted filtering">Filter by
-                    Genre:</label>
-                <select class="form-select form-select-sm" id="filterOption" aria-label="Filter select">
-                    <option value="None">None</option>
-                    <option>Crime & Horror</option>
-                    <option>Mystery</option>
-                    <option>Fantasy</option>
-                    <option>Science Fiction</option>
-                    <option>Adventure Fiction</option>
-                    <option>Romance</option>
-                    <option>Fairy tale</option>
-                    <option>History</option>
-                    <option>Poetry</option>
-                    <option>Literary fiction</option>
-                    <option>Biography</option>
-                    <option>Children's Literature</option>
-                </select>
-            </div>
+    <div class="row mb-3 g-2 justify-content-center">
+        <div class="col-auto d-flex align-items-center filterDrop">
+            <label for="filterOption" class="form-label fw-semibold small text-muted mb-0 me-2">Filter by Genre:</label>
+            <select class="form-select form-select-sm" id="filterOption" aria-label="Filter select" style="width: 200px;">
+                <option value="None">None</option>
+                <option>Crime & Horror</option>
+                <option>Mystery</option>
+                <option>Fantasy</option>
+                <option>Science Fiction</option>
+                <option>Adventure Fiction</option>
+                <option>Romance</option>
+                <option>Fairy tale</option>
+                <option>History</option>
+                <option>Poetry</option>
+                <option>Literary fiction</option>
+                <option>Biography</option>
+                <option>Children's Literature</option>
+            </select>
+        </div>
 
-            <div class="col-12 col-md-6 sortDrop">
-                <label for="sortOption" class="form-label fw-semibold small text-muted sorting">Sort by Price:</label>
-                <select class="form-select form-select-sm" id="sortOption" aria-label="Sort select">
-                    <option value="none" selected>None</option>
-                    <option>Low to High</option>
-                    <option>High to Low</option>
-                </select>
-            </div>
+        <div class="col-auto d-flex align-items-center sortDrop">
+            <label for="sortOption" class="form-label fw-semibold small text-muted mb-0 me-2">Sort by Price:</label>
+            <select class="form-select form-select-sm" id="sortOption" aria-label="Sort select" style="width: 200px;">
+                <option value="none" selected>None</option>
+                <option>Low to High</option>
+                <option>High to Low</option>
+            </select>
+        </div>
         </div>
 
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4" id="productList"></div>

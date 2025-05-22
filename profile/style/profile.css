@@ -1,4 +1,16 @@
+/* Global Styles */
+* {
+  box-sizing: border-box;
+}
+
 body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  color: #333;
+  min-height: 100vh;
+  overflow-x: hidden;
+  display: flex;
+  padding-top: 70px;
   background: linear-gradient(
       135deg,
       rgba(139, 69, 19, 0.7),
@@ -7,118 +19,130 @@ body {
     url("https://images.unsplash.com/photo-1512820790803-83ca734da794");
   background-size: cover;
   background-position: center;
-  min-height: 100vh;
-  margin: 0;
-  font-family: system-ui, sans-serif;
-  color: #333;
-  overflow-x: hidden;
-  display: flex;
-  padding-top: 70px; /* Added to push content below navbar */
 }
 
-.navbar-nav .nav-link {
-  font-weight: 500;
-  color: #657c6a;
-}
-.navbar-nav .nav-link:hover {
-  color: #a2b9a7;
-}
-.navbar-brand img {
-  border-radius: 8px;
-}
-
-.navbar-search {
-  max-width: 300px;
-}
-
-.navbar-search input {
-  border-radius: 20px 0 0 20px;
-}
-
-.navbar-search button {
-  border-radius: 0 20px 20px 0;
-  background-color: #657c6a;
+/* Button Styles */
+.btnn {
+  background-color: #8b4513;
   color: white;
   border: none;
-}
-
-.navbar-search button:hover {
-  background-color: #a2b9a7;
-}
-
-.nav-link {
+  border-radius: 10px;
+  padding: 6px 12px;
   cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
-.sidebar {
-  width: 250px;
-  background: #4a2c0b;
-  color: #fffaf0;
-  height: 100vh;
-  position: fixed;
-  padding: 20px;
-  transition: transform 0.3s ease;
-  top: 70px; /* Added to place below fixed navbar */
-  z-index: 1001;
+.btnn:hover,
+.btnn:focus {
+  background-color: #6a3510;
+  outline: none;
 }
-.btn-primary {
-  background: #8b4513;
-  border: none;
-  border-radius: 5px;
+
+/* Sidebar */
+.sidebar {
+  position: fixed;
+  top: 4.1rem;
+  left: 0;
+  width: 250px;
+  height: 100vh;
+  background: #657c6a;
+  color: white;
+  padding-top: 1rem;
+  z-index: 1000;
+  border-right: 1px solid #ccc;
 }
 
 .sidebar .nav-item {
-  padding: 10px 15px;
-  color: #fffaf0;
-  text-decoration: none;
+  position: relative;
   display: flex;
   align-items: center;
-  border-radius: 5px;
+  padding: 12px 1rem;
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+  transition: background-color 0.3s, color 0.3s;
+  cursor: pointer;
 }
 
 .sidebar .nav-item:hover,
-.nav-item.active {
-  background: #8b4513;
+.sidebar .nav-item.active {
+  background-color: #8b4513;
+  color: #fff;
 }
 
+.sidebar .nav-item i {
+  font-size: 20px;
+  margin-right: 12px;
+}
+
+.nav-text {
+  color: #fff;
+  display: inline-block;
+}
+
+/* Tooltip (shown on hover with JS class) */
+.sidebar .nav-item::after {
+  content: attr(data-label);
+  position: absolute;
+  left: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: #8b4513;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 6px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  margin-left: 10px;
+  font-size: 14px;
+  z-index: 1001;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.sidebar .nav-item.show-tooltip::after {
+  opacity: 1;
+  transform: translateY(-50%) translateX(0);
+}
+
+/* Content Area */
 .content {
   margin-left: 250px;
+  width: calc(100% - 250px);
   padding: 20px;
   background: rgba(255, 245, 238, 0.9);
-  border-radius: 10px;
   min-height: 100vh;
   transition: opacity 0.4s ease;
   opacity: 0;
-  width: 100%;
 }
 
 .content.loaded {
   opacity: 1;
 }
 
-/* Fix navbar on top */
-.navbar {
-  position: fixed;
-  top: 0;
-  width: 100%;
-  z-index: 1100; /* Above sidebar */
-}
-
-/* Responsive for mobile */
+/* Mobile Styles */
 @media (max-width: 768px) {
   .sidebar {
-    transform: translateX(-250px);
-    position: fixed;
-    z-index: 1001;
-    top: 70px; /* Maintain below navbar */
+    width: 70px;
   }
 
-  .sidebar.active {
-    transform: translateX(0);
+  .sidebar .nav-item {
+    justify-content: center;
+    padding: 12px 0;
+  }
+
+  .sidebar .nav-item i {
+    margin: 0;
+  }
+
+  .sidebar .nav-text {
+    display: none;
   }
 
   .content {
-    margin-left: 0;
+    margin-left: 70px;
+    width: calc(100% - 70px);
+    padding: 10px;
   }
 
   .toggle-btn {
@@ -126,18 +150,26 @@ body {
     position: fixed;
     top: 10px;
     left: 10px;
-    z-index: 1100;
-    background: #8b4513;
+    background: transparent;
     border: none;
-    color: #fffaf0;
     padding: 10px;
     border-radius: 5px;
     cursor: pointer;
+    z-index: 1100;
   }
 }
 
+/* Desktop Toggle Button Hidden */
 @media (min-width: 769px) {
   .toggle-btn {
+    display: none;
+  }
+
+  .content {
+    width: calc(100% - 250px);
+  }
+
+  .sidebar .nav-item::after {
     display: none;
   }
 }
