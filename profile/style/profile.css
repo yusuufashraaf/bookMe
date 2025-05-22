@@ -110,7 +110,7 @@ body {
   margin-left: 250px;
   width: calc(100% - 250px);
   padding: 20px;
-  background: rgba(255, 245, 238, 0.9);
+  background: #f8f4ee;;
   min-height: 100vh;
   transition: opacity 0.4s ease;
   opacity: 0;
