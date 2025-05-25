@@ -55,7 +55,7 @@ async function loadNavbar() {
   } catch (error) {
     console.error("Navbar load error:", error);
   }
-});
+};
 
 // Setup search functionality for navbar
 function setupSearch() {
