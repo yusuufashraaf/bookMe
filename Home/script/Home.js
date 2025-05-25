@@ -26,7 +26,7 @@ onAuthStateChanged(auth, (user) => {
 });
 
 // Load the navbar dynamically and enhance it with search bar
-async function loadNavbar() {
+(async function loadNavbar() {
   try {
     const res = await fetch("../navBar/navbar.html");
     let html = await res.text();    
@@ -55,7 +55,7 @@ async function loadNavbar() {
   } catch (error) {
     console.error("Navbar load error:", error);
   }
-};
+})();
 
 // Setup search functionality for navbar
 function setupSearch() {
@@ -240,6 +240,3 @@ DOM.sortSelect.addEventListener("change", () => applyFiltersAndRender(true));
   }
 })();
 
-setTimeout(() => {
-  loadNavbar()
-}, 0);
