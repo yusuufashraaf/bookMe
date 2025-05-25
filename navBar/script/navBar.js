@@ -3,7 +3,7 @@ import {
   onAuthStateChanged,
   signOut,
 } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
-import { setupSearch } from "../../Home/script/Home.js";
+
 export function navBarButton(auth) {
   onAuthStateChanged(auth, (user) => {
     if (!user) {
