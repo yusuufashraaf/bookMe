@@ -28,15 +28,14 @@ onAuthStateChanged(auth, (user) => {
 // Load the navbar dynamically and enhance it with search bar
 (async function loadNavbar() {
   try {
-    const res = await fetch("/navBar/navbar.html");
-    let html = await res.text();
-
+    const res = await fetch("../navBar/navbar.html");
+    let html = await res.text();    
     // Correct the relative path to navbar CSS
     html = html.replace(
       /href="([^"]*\/style\/navBar.css)"/,
-      'href="/navBar/style/navBar.css"'
+      'href="../navBar/style/navBar.css"'
     );
-
+    
     // Inject search input and button into navbar
     html = html.replace(
       '<ul class="navbar-nav ms-auto">',
