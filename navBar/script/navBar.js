@@ -1,5 +1,8 @@
 // navBar.js
-import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
+import {
+  onAuthStateChanged,
+  signOut,
+} from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
 
 export function navBarButton(auth) {
   onAuthStateChanged(auth, (user) => {
@@ -32,4 +35,23 @@ export function navBarButton(auth) {
 
     if (routes[page]) window.location.href = routes[page];
   });
+}
+
+export async function loadNavbar(auth) {
+  try {
+    const res = await fetch("../navBar/navbar.html");
+    let html = await res.text();
+    html = html.replace(
+      /href="([^"]*\/style\/navBar.css)"/,
+      'href="../navBar/style/navBar.css"'
+    );
+
+    document.getElementById("navbar-container").innerHTML = html;
+
+    setTimeout(() => {
+      navBarButton(auth);
+    }, 0);
+  } catch (e) {
+    console.error("Navbar load error:", e);
+  }
 }

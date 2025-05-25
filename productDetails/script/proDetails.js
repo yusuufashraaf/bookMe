@@ -16,7 +16,7 @@ import {
   getAuth,
   onAuthStateChanged,
 } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
-import { navBarButton } from "../../navBar/script/navBar.js";
+import { loadNavbar } from "../../navBar/script/navBar.js";
 
 // Global variables
 const auth = getAuth();
@@ -26,19 +26,7 @@ const productId = urlParams.get("bookId");
 let currentBook = null;
 
 // DOM loaded handler
-document.addEventListener("DOMContentLoaded", () => {
-  fetch("../navBar/navbar.html")
-    .then((res) => res.text())
-    .then((html) => {
-      const fixedHtml = html.replace(
-        /href="([^"]*\/style\/navBar.css)"/,
-        'href="../navBar/style/navBar.css"'
-      );
-
-      document.getElementById("navbar-container").innerHTML = fixedHtml;
-    })
-    .catch((err) => console.error("Navbar load error:", err));
-});
+loadNavbar(auth);
 
 onAuthStateChanged(auth, async (user) => {
   if (user) {
@@ -319,4 +307,3 @@ async function calculateTotalPrice() {
   });
   return total;
 }
-navBarButton(auth);

@@ -1,14 +1,10 @@
 // Import functions and modules from Firebase and local files
-import { getAllUsers, updateUser, getAllOrders } from "../../firebase.js";
+import { getAllUsers, updateUser, getAllOrders, auth } from "../../firebase.js";
 import {
-  getAuth,
   onAuthStateChanged,
   signOut,
 } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
-import { navBarButton } from "../../navBar/script/navBar.js";
-
-// Initialize Firebase Auth
-const auth = getAuth();
+import { loadNavbar } from "../../navBar/script/navBar.js";
 
 // DOM element references grouped in an object
 const DOM = {
@@ -23,7 +19,7 @@ const DOM = {
   signOutBtn: document.getElementById("signOutBtn"),
 };
 
-// Email validation function (checks for .com domain)
+// Email validation function
 const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.com$/.test(email);
 
 // Get currently logged-in user's UID
@@ -36,20 +32,7 @@ const getUserId = () =>
   });
 
 // Load navbar HTML and insert it into the page
-async function loadNavbar() {
-  try {
-    const res = await fetch("../navBar/navbar.html");
-    let html = await res.text();
-    html = html.replace(
-      /href="([^"]*\/style\/navBar.css)"/,
-      'href="../navBar/style/navBar.css"'
-    );
-    document.getElementById("navbar-container").innerHTML = html;
-    navBarButton(auth);
-  } catch (e) {
-    console.error("Navbar load error:", e);
-  }
-}
+loadNavbar(auth);
 
 // Render order data into the orders table
 function renderOrders(orders) {
@@ -87,19 +70,20 @@ function toggleSections(showProfile) {
       timeout = setTimeout(() => item.classList.remove("show-tooltip"), 600);
     });
   });
-})()
+})();
 
 // Main script execution after DOM is fully loaded
 document.addEventListener("DOMContentLoaded", async () => {
-  // Load the navigation bar
-  await loadNavbar();
+  // to make all promises parallel
+  const [allUsers, userId] = await Promise.all([
+    await getAllUsers(),
+    await getUserId(),
+  ]);
 
   // Get current user's ID and redirect if not logged in
-  const userId = await getUserId();
   if (!userId) return window.location.replace("../../index.html");
 
   // Get all users and find the current user
-  const allUsers = await getAllUsers();
   const currentUser = allUsers.find((u) => u.uid === userId);
   if (!currentUser) return;
 
@@ -157,5 +141,4 @@ document.addEventListener("DOMContentLoaded", async () => {
       alert("Failed to update profile.");
     }
   });
-
 });
