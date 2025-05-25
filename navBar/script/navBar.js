@@ -55,3 +55,35 @@ export async function loadNavbar(auth) {
     console.error("Navbar load error:", e);
   }
 }
+
+export async function loadHomeNavbar(auth) {
+  try {
+    const res = await fetch("../navBar/navbar.html");
+    let html = await res.text();    
+    // Correct the relative path to navbar CSS
+    html = html.replace(
+      /href="([^"]*\/style\/navBar.css)"/,
+      'href="../navBar/style/navBar.css"'
+    );
+    
+    // Inject search input and button into navbar
+    html = html.replace(
+      '<ul class="navbar-nav ms-auto">',
+      `
+        <input class="search" type="search" id="searchInput" placeholder="Search" aria-label="Search" />
+        <button class="btnn" id="searchBtn" type="submit">Search</button>
+        <ul class="navbar-nav ms-auto">
+      `
+    );
+
+    // Set the final navbar HTML
+    document.getElementById("navbar-container").innerHTML = html;
+
+    // Initialize navbar button and search functionality
+    navBarButton(auth);
+    setupSearch();
+  } catch (error) {
+    console.error("Navbar load error:", error);
+  }
+};
+

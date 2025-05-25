@@ -1,6 +1,6 @@
 // Import functions and modules
 import { getAllBooks, auth } from "../../firebase.js";
-import { navBarButton } from "../../navBar/script/navBar.js";
+import { loadHomeNavbar } from "../../navBar/script/navBar.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
 
 
@@ -26,37 +26,7 @@ onAuthStateChanged(auth, (user) => {
 });
 
 // Load the navbar dynamically and enhance it with search bar
-(async function loadNavbar() {
-  try {
-    const res = await fetch("../navBar/navbar.html");
-    let html = await res.text();    
-    // Correct the relative path to navbar CSS
-    html = html.replace(
-      /href="([^"]*\/style\/navBar.css)"/,
-      'href="../navBar/style/navBar.css"'
-    );
-    
-    // Inject search input and button into navbar
-    html = html.replace(
-      '<ul class="navbar-nav ms-auto">',
-      `
-        <input class="search" type="search" id="searchInput" placeholder="Search" aria-label="Search" />
-        <button class="btnn" id="searchBtn" type="submit">Search</button>
-        <ul class="navbar-nav ms-auto">
-      `
-    );
-
-    // Set the final navbar HTML
-    document.getElementById("navbar-container").innerHTML = html;
-
-    // Initialize navbar button and search functionality
-    navBarButton(auth);
-    setupSearch();
-  } catch (error) {
-    console.error("Navbar load error:", error);
-  }
-})();
-
+loadHomeNavbar(auth)
 // Setup search functionality for navbar
 function setupSearch() {
   const searchBtn = document.getElementById("searchBtn");
