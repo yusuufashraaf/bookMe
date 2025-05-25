@@ -81,7 +81,6 @@ export async function loadHomeNavbar(auth) {
 
     // Initialize navbar button and search functionality
     navBarButton(auth);
-    setupSearch();
   } catch (error) {
     console.error("Navbar load error:", error);
   }
