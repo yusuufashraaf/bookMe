@@ -27,8 +27,9 @@ onAuthStateChanged(auth, (user) => {
 
 // Load the navbar dynamically and enhance it with search bar
 loadHomeNavbar(auth)
+
 // Setup search functionality for navbar
-function setupSearch() {
+ export function setupSearch() {
   const searchBtn = document.getElementById("searchBtn");
   const searchInput = document.getElementById("searchInput");
 
