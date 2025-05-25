@@ -1,7 +1,6 @@
-
 body {
   background-color: #f8f9fa;
-  font-family: 'Arial', sans-serif;
+  font-family: "Arial", sans-serif;
 }
 .about-title {
   color: black;
@@ -38,8 +37,4 @@ body {
 
 .member-role {
   color: #a2b9a7;
-}
-
-.nav-link {
-  cursor: pointer;
 }

@@ -9,10 +9,9 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 import {
   getAuth,
-  onAuthStateChanged
+  onAuthStateChanged,
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { navBarButton } from "../../navBar/script/navBar.js";
-
+import { loadNavbar } from "../../navBar/script/navBar.js";
 // Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyCxY-KJ8H1m-9DO2_fs5qLo9MEwb7PiHVY",
@@ -41,24 +40,7 @@ onAuthStateChanged(auth, (user) => {
   }
 });
 
-document.addEventListener("DOMContentLoaded", () => {
-  fetch("../navBar/navbar.html")
-    .then((response) => response.text())
-    .then((html) => {
-      // Fix CSS link path inside navbar.html before inserting
-      const fixedHtml = html.replace(
-        /href="([^"]*\/style\/navBar.css)"/,
-        'href="../navBar/style/navBar.css"'
-      );
-
-      document.getElementById("navbar-container").innerHTML = fixedHtml;
-
-      if (typeof navBarButton === "function") navBarButton();
-    })
-    .catch((err) => {});
-});
-
-
+loadNavbar(auth);
 
 async function fetchWishlist(userId) {
   const wishlistContainer = document.getElementById("wishlist-container");
@@ -74,7 +56,8 @@ async function fetchWishlist(userId) {
     wishlistContainer.innerHTML = ""; // Clear loading text
 
     if (querySnapshot.empty) {
-      wishlistContainer.innerHTML = "<p class='text-muted'>Your wishlist is empty.</p>";
+      wishlistContainer.innerHTML =
+        "<p class='text-muted'>Your wishlist is empty.</p>";
     }
 
     querySnapshot.forEach((doc) => {
@@ -83,8 +66,12 @@ async function fetchWishlist(userId) {
       wishlistContainer.innerHTML += `
         <div class="col">
           <div class="card h-100 shadow-sm">
-          <a href="../productDetails/product.html?bookId=${item.bookId}" class="text-decoration-none">
-            <img src="${item.imageUrl || "https://via.placeholder.com/150"}" class="card-img-top" alt="${item.title}">
+          <a href="../productDetails/product.html?bookId=${
+            item.bookId
+          }" class="text-decoration-none">
+            <img src="${
+              item.imageUrl || "https://via.placeholder.com/150"
+            }" class="card-img-top" alt="${item.title}">
             <div class="card-body">
               <h5 class="card-title">${item.title}</h5>
               </a>
@@ -101,5 +88,3 @@ async function fetchWishlist(userId) {
     wishlistContainer.innerHTML = `<p class="text-danger">Failed to load wishlist.</p>`;
   }
 }
-
-navBarButton(auth);

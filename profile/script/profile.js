@@ -1,26 +1,28 @@
-import { getAllUsers, updateUser, getAllOrders } from "../../firebase.js";
+// Import functions and modules from Firebase and local files
+import { getAllUsers, updateUser, getAllOrders, auth } from "../../firebase.js";
 import {
-  getAuth,
   onAuthStateChanged,
   signOut,
 } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
-import { navBarButton } from "../../navBar/script/navBar.js";
+import { loadNavbar } from "../../navBar/script/navBar.js";
 
-const auth = getAuth();
+// DOM element references grouped in an object
+const DOM = {
+  emailInput: document.getElementById("emailInput"),
+  userNameInput: document.getElementById("usernameInput"),
+  updateBtn: document.getElementById("updateButton"),
+  profileSection: document.getElementById("edit-profile-section"),
+  ordersSection: document.getElementById("view-order-section"),
+  tableBody: document.getElementById("orders-table-body"),
+  editProfileBtn: document.getElementById("editProfileBtn"),
+  ordersBtn: document.getElementById("orders"),
+  signOutBtn: document.getElementById("signOutBtn"),
+};
 
-// DOM refs
-const emailInput = document.getElementById("emailInput");
-const userNameInput = document.getElementById("usernameInput");
-const updateBtn = document.getElementById("updateButton");
-const profileSection = document.getElementById("edit-profile-section");
-const ordersSection = document.getElementById("view-order-section");
-const tableBody = document.getElementById("orders-table-body");
-const editProfileBtn = document.getElementById("editProfileBtn");
-const ordersBtn = document.getElementById("orders");
-const signOutBtn = document.getElementById("signOutBtn");
-
+// Email validation function
 const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.com$/.test(email);
 
+// Get currently logged-in user's UID
 const getUserId = () =>
   new Promise((resolve) => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -29,27 +31,16 @@ const getUserId = () =>
     });
   });
 
-async function loadNavbar() {
-  try {
-    const res = await fetch("../navBar/navbar.html");
-    let html = await res.text();
-    html = html.replace(
-      /href="([^"]*\/style\/navBar.css)"/,
-      'href="../navBar/style/navBar.css"'
-    );
-    document.getElementById("navbar-container").innerHTML = html;
-    navBarButton(auth);
-  } catch (e) {
-    console.error("Navbar load error:", e);
-  }
-}
+// Load navbar HTML and insert it into the page
+loadNavbar(auth);
 
+// Render order data into the orders table
 function renderOrders(orders) {
   if (!orders.length) {
-    tableBody.innerHTML = `<tr><td colspan="3" class="text-center">No orders found.</td></tr>`;
+    DOM.tableBody.innerHTML = `<tr><td colspan="3" class="text-center">No orders found.</td></tr>`;
     return;
   }
-  tableBody.innerHTML = orders
+  DOM.tableBody.innerHTML = orders
     .map(({ id, items, total }) => {
       const list = items.itemsName
         .map((it, i) => `${i + 1}. ${it || "-"}`)
@@ -61,12 +52,14 @@ function renderOrders(orders) {
     .join("");
 }
 
+// Toggle between profile editing section and order viewing section
 function toggleSections(showProfile) {
-  profileSection.style.display = showProfile ? "block" : "none";
-  ordersSection.style.display = showProfile ? "none" : "block";
+  DOM.profileSection.style.display = showProfile ? "block" : "none";
+  DOM.ordersSection.style.display = showProfile ? "none" : "block";
 }
 
-function initTooltipHover() {
+// Initialize tooltip hover effect for sidebar navigation
+(function initTooltipHover() {
   const navItems = document.querySelectorAll(".sidebar .nav-item");
   let timeout;
   navItems.forEach((item) => {
@@ -77,30 +70,38 @@ function initTooltipHover() {
       timeout = setTimeout(() => item.classList.remove("show-tooltip"), 600);
     });
   });
-}
+})();
 
+// Main script execution after DOM is fully loaded
 document.addEventListener("DOMContentLoaded", async () => {
-  await loadNavbar();
+  // to make all promises parallel
+  const [allUsers, userId] = await Promise.all([
+    await getAllUsers(),
+    await getUserId(),
+  ]);
 
-  const userId = await getUserId();
+  // Get current user's ID and redirect if not logged in
   if (!userId) return window.location.replace("../../index.html");
 
-  const allUsers = await getAllUsers();
+  // Get all users and find the current user
   const currentUser = allUsers.find((u) => u.uid === userId);
   if (!currentUser) return;
 
-  emailInput.value = currentUser.email;
-  userNameInput.value = currentUser.name;
+  // Prefill the profile form with current user's data
+  DOM.emailInput.value = currentUser.email;
+  DOM.userNameInput.value = currentUser.name;
 
-  editProfileBtn?.addEventListener("click", (e) => {
+  // Event listener to show profile edit section
+  DOM.editProfileBtn?.addEventListener("click", (e) => {
     e.preventDefault();
     toggleSections(true);
   });
 
-  ordersBtn?.addEventListener("click", async (e) => {
+  // Event listener to show order history section and fetch orders
+  DOM.ordersBtn?.addEventListener("click", async (e) => {
     e.preventDefault();
     toggleSections(false);
-    tableBody.innerHTML = "";
+    DOM.tableBody.innerHTML = "";
     try {
       const { orders } = await getAllOrders();
       renderOrders(orders.filter((o) => o.userId === userId));
@@ -109,22 +110,23 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   });
 
-  signOutBtn?.addEventListener("click", async (e) => {
+  // Event listener to handle sign-out functionality
+  DOM.signOutBtn?.addEventListener("click", async (e) => {
     e.preventDefault();
     try {
       await signOut(auth);
       sessionStorage.clear();
-      localStorage.clear();
       window.location.replace("../../index.html");
     } catch (e) {
       console.error("Error signing out:", e);
     }
   });
 
-  updateBtn?.addEventListener("click", async (e) => {
+  // Event listener for updating user profile
+  DOM.updateBtn?.addEventListener("click", async (e) => {
     e.preventDefault();
-    const newEmail = emailInput.value.trim();
-    const newName = userNameInput.value.trim();
+    const newEmail = DOM.emailInput.value.trim();
+    const newName = DOM.userNameInput.value.trim();
 
     if (!isValidEmail(newEmail))
       return alert("Please enter a valid .com email address.");
@@ -139,6 +141,4 @@ document.addEventListener("DOMContentLoaded", async () => {
       alert("Failed to update profile.");
     }
   });
-
-  initTooltipHover();
 });

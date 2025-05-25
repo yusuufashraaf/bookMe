@@ -1,4 +1,4 @@
-import { navBarButton } from "../../navBar/script/navBar.js";
+import { loadNavbar } from "../../navBar/script/navBar.js";
 import { db } from "../../firebase.js";
 import {
   getDoc,
@@ -182,19 +182,6 @@ function getTotalItems(cartItems) {
 
 // FETCHING NAV BAR TO CART PAGE
 document.addEventListener("DOMContentLoaded", () => {
-  fetch("../navBar/navbar.html")
-    .then((res) => res.text())
-    .then((html) => {
-      const processedHtml = html.replace(
-        /href="([^"]*\/style\/navBar.css)"/,
-        'href="../navBar/style/navBar.css"'
-      );
-
-      document.getElementById("navbar-container").innerHTML = processedHtml;
-      navBarButton(auth);
-    })
-    .catch((err) => console.error("Navbar load error:", err));
-
   document.querySelector(".checkout-btn")?.addEventListener("click", () => {
     window.location.href = "../payment/payment.html";
   });
@@ -309,3 +296,5 @@ function createEventListeners() {
     });
   });
 }
+
+loadNavbar(auth);

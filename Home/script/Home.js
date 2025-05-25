@@ -1,7 +1,8 @@
-// home.js
+// Import functions and modules
 import { getAllBooks, auth } from "../../firebase.js";
 import { navBarButton } from "../../navBar/script/navBar.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
+
 
 const DOM = {
   productList: document.getElementById("productList"),
@@ -11,6 +12,7 @@ const DOM = {
   paginationContainer: document.getElementById("pagination"),
 };
 
+// Configuration for pagination
 const CONFIG = {
   itemsPerPage: 8,
 };
@@ -18,20 +20,24 @@ const CONFIG = {
 let currentPage = 1;
 let allProducts = [];
 
+// Redirect to login if user is not authenticated
 onAuthStateChanged(auth, (user) => {
   if (!user) window.location.replace("../../index.html");
 });
 
-async function loadNavbar() {
+// Load the navbar dynamically and enhance it with search bar
+(async function loadNavbar() {
   try {
     const res = await fetch("../navBar/navbar.html");
     let html = await res.text();
 
+    // Correct the relative path to navbar CSS
     html = html.replace(
       /href="([^"]*\/style\/navBar.css)"/,
       'href="../navBar/style/navBar.css"'
     );
 
+    // Inject search input and button into navbar
     html = html.replace(
       '<ul class="navbar-nav ms-auto">',
       `
@@ -41,14 +47,18 @@ async function loadNavbar() {
       `
     );
 
+    // Set the final navbar HTML
     document.getElementById("navbar-container").innerHTML = html;
+
+    // Initialize navbar button and search functionality
     navBarButton(auth);
     setupSearch();
   } catch (error) {
     console.error("Navbar load error:", error);
   }
-}
+})();
 
+// Setup search functionality for navbar
 function setupSearch() {
   const searchBtn = document.getElementById("searchBtn");
   const searchInput = document.getElementById("searchInput");
@@ -60,12 +70,14 @@ function setupSearch() {
     applyFiltersAndRender(true, searchInput.value);
   };
 
+  // Handle button click and "Enter" key press
   searchBtn.addEventListener("click", triggerSearch);
   searchInput.addEventListener("keydown", (e) => {
     if (e.key === "Enter") triggerSearch(e);
   });
 }
 
+// Fetch all product data from Firebase
 async function initializeProducts() {
   try {
     allProducts = await getAllBooks();
@@ -74,15 +86,18 @@ async function initializeProducts() {
   }
 }
 
+// Render list of products into the DOM
 function renderProducts(products) {
   DOM.productList.innerHTML = "";
 
+  // Show "No products found" if empty
   if (!products.length) {
     DOM.productList.innerHTML = `<p style="color:black; font-size:1.7rem;">No products found.</p>`;
     DOM.paginationContainer.innerHTML = "";
     return;
   }
 
+  // Paginate and render product items
   const { items, totalPages } = paginateItems(
     products,
     currentPage,
@@ -96,9 +111,11 @@ function renderProducts(products) {
     DOM.productList.appendChild(productItem);
   });
 
+  // Render pagination buttons
   renderPaginationControls(totalPages);
 }
 
+// Generate HTML structure for a single product
 function generateProductHTML(product) {
   return `
     <div class="card h-100">
@@ -106,15 +123,14 @@ function generateProductHTML(product) {
         product.bookId
       }">
         <img 
-src="${product.imageUrl}" class="card-img-top product-img imgContain" alt="${escapeHTML(
-    product.name
-  )}" />
+          src="${product.imageUrl}" 
+          class="card-img-top product-img imgContain" 
+          alt="${escapeHTML(product.name)}" 
+        />
         <div class="card-body d-flex flex-column justify-content-between">
           <div>
             <h5 class="card-title mb-1">${toPascalCase(product.title)}</h5>
-            <p class="mb-2 ellipsis">${escapeHTML(
-              toPascalCase(product.description)
-            )}</p>
+            <p class="mb-2 ellipsis">${escapeHTML(toPascalCase(product.description))}</p>
           </div>
           <span class="price mt-2">EGP ${product.price}</span>
         </div>
@@ -123,6 +139,7 @@ src="${product.imageUrl}" class="card-img-top product-img imgContain" alt="${esc
   `;
 }
 
+// Render pagination controls/buttons
 function renderPaginationControls(totalPages) {
   DOM.paginationContainer.innerHTML = "";
 
@@ -142,6 +159,7 @@ function renderPaginationControls(totalPages) {
   }
 }
 
+// Filter products based on category and search input
 function filterProducts(products, category, searchText) {
   let filtered = [...products];
 
@@ -157,6 +175,7 @@ function filterProducts(products, category, searchText) {
   return filtered;
 }
 
+// Sort products by selected option
 function sortProducts(products, sortOption) {
   if (sortOption === "Low to High") {
     return [...products].sort((a, b) => a.price - b.price);
@@ -166,6 +185,7 @@ function sortProducts(products, sortOption) {
   return products;
 }
 
+// Paginate the product array
 function paginateItems(items, page, perPage) {
   const totalPages = Math.ceil(items.length / perPage);
   const start = (page - 1) * perPage;
@@ -173,6 +193,7 @@ function paginateItems(items, page, perPage) {
   return { items: paginatedItems, totalPages };
 }
 
+// Convert string to PascalCase  (youssef ashraf) ==> (Youssef Ashraf)
 function toPascalCase(str = "") {
   return str
     .split(" ")
@@ -180,12 +201,14 @@ function toPascalCase(str = "") {
     .join(" ");
 }
 
+// Escape HTML for safety
 function escapeHTML(str = "") {
   const div = document.createElement("div");
   div.textContent = str;
   return div.innerHTML;
 }
 
+// Apply selected filters and sorting, then render products
 function applyFiltersAndRender(resetPage = false, searchVal = "") {
   if (resetPage) currentPage = 1;
 
@@ -200,10 +223,12 @@ function applyFiltersAndRender(resetPage = false, searchVal = "") {
   renderProducts(sorted);
 }
 
+// Attach filter/sort change events
 DOM.filterSelect.addEventListener("change", () => applyFiltersAndRender(true));
 DOM.sortSelect.addEventListener("change", () => applyFiltersAndRender(true));
 
-async function main() {
+// Main execution block: fetch products and render on page load
+(async function main() {
   DOM.loader.style.display = "block";
 
   try {
@@ -214,7 +239,4 @@ async function main() {
   } finally {
     DOM.loader.style.display = "none";
   }
-}
-
-loadNavbar();
-main();
+})();

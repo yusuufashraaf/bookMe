@@ -10,8 +10,10 @@ import {
   doc,
   deleteDoc,
   updateDoc,
-  query, where,
-  orderBy, limit
+  query,
+  where,
+  orderBy,
+  limit,
 } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-firestore.js";
 import {
   getAuth,
@@ -23,9 +25,7 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
 } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
-import {
-  getStorage,
-} from "https://www.gstatic.com/firebasejs/11.7.3/firebase-storage.js";
+import { getStorage } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-storage.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCxY-KJ8H1m-9DO2_fs5qLo9MEwb7PiHVY",
@@ -45,7 +45,7 @@ const storage = getStorage(app);
 export { db, auth, storage };
 
 // with email and password
-export async function signUp(email, password, name ) {
+export async function signUp(email, password, name) {
   try {
     const userCredential = await createUserWithEmailAndPassword(
       auth,
@@ -63,12 +63,12 @@ export async function signUp(email, password, name ) {
     // });
 
     await setDoc(doc(db, "users", user.uid), {
-    uid: user.uid,
-    name: name,
-    email: email,
-    admin: false,
-    createdAt: new Date(),
-});
+      uid: user.uid,
+      name: name,
+      email: email,
+      admin: false,
+      createdAt: new Date(),
+    });
     alert(`User signed up: ${user.email}`);
     window.location.href = "index.html";
   } catch (error) {
@@ -78,7 +78,11 @@ export async function signUp(email, password, name ) {
 
 export async function loginUser(email, password) {
   try {
-    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    const userCredential = await signInWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
     const user = userCredential.user;
     //get the user data
     const userRef = doc(db, "users", user.uid);
@@ -143,7 +147,6 @@ export async function signInWithGoogle() {
     const userSnap = await getDoc(userRef);
 
     const userData = userSnap.data();
-
 
     if (!userSnap.exists()) {
       alert("Please sign up before signing in with this email.");
@@ -272,7 +275,7 @@ export async function getAllOrders() {
     const q = query(ordersRef, orderBy("orderAt", "desc"), limit(20));
     const querySnapshot = await getDocs(q);
 
-    const orders = querySnapshot.docs.map(doc => ({
+    const orders = querySnapshot.docs.map((doc) => ({
       ...doc.data(),
       id: doc.id,
     }));
@@ -284,7 +287,7 @@ export async function getAllOrders() {
   }
 }
 //=============================================================================================
-// add orders 
+// add orders
 export async function addOrder(orderData) {
   try {
     const docRef = await addDoc(collection(db, "orders"), orderData);
@@ -296,19 +299,19 @@ export async function addOrder(orderData) {
 //==============================================================================================
 //get user name by id
 export async function getUserNameById(userId) {
-    if (!userId) return "N/A";
-    try {
-        const userRef = doc(db, "users", userId);
-        const userSnap = await getDoc(userRef);
-        if (userSnap.exists()) {
-            return userSnap.data().name || "Unnamed User";
-        } else {
-            return "User Not Found";
-        }
-    } catch (error) {
-        console.error("Error fetching user:", error);
-        return "Error";
+  if (!userId) return "N/A";
+  try {
+    const userRef = doc(db, "users", userId);
+    const userSnap = await getDoc(userRef);
+    if (userSnap.exists()) {
+      return userSnap.data().name || "Unnamed User";
+    } else {
+      return "User Not Found";
     }
+  } catch (error) {
+    console.error("Error fetching user:", error);
+    return "Error";
+  }
 }
 //========================================================================================
 //clear user cart after payment

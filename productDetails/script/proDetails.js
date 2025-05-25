@@ -16,7 +16,7 @@ import {
   getAuth,
   onAuthStateChanged,
 } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
-import { navBarButton } from "../../navBar/script/navBar.js";
+import { loadNavbar } from "../../navBar/script/navBar.js";
 
 // Global variables
 const auth = getAuth();
@@ -26,26 +26,14 @@ const productId = urlParams.get("bookId");
 let currentBook = null;
 
 // DOM loaded handler
-document.addEventListener("DOMContentLoaded", () => {
-  fetch("../navBar/navbar.html")
-    .then((res) => res.text())
-    .then((html) => {
-      const fixedHtml = html.replace(
-        /href="([^"]*\/style\/navBar.css)"/,
-        'href="../navBar/style/navBar.css"'
-      );
-
-      document.getElementById("navbar-container").innerHTML = fixedHtml;
-    })
-    .catch((err) => console.error("Navbar load error:", err));
-});
+loadNavbar(auth);
 
 onAuthStateChanged(auth, async (user) => {
   if (user) {
     currentUserId = user.uid;
-     const book = await loadBookDetails(); 
+    const book = await loadBookDetails();
     if (book) {
-      await initializeWishlistButton(book); 
+      await initializeWishlistButton(book);
       currentBook = book;
       setupCartButton();
     }
@@ -261,7 +249,7 @@ async function loadRelatedBooks(category, currentId) {
 
   const container = document.querySelector(".related-books");
   container.innerHTML = "";
-  const relatedTitle = document.getElementById("related-title"); 
+  const relatedTitle = document.getElementById("related-title");
 
   let relatedCount = 0;
 
@@ -282,7 +270,7 @@ async function loadRelatedBooks(category, currentId) {
       container.appendChild(card);
     }
   });
-   if (relatedCount > 0) {
+  if (relatedCount > 0) {
     relatedTitle.style.display = "block";
   } else {
     relatedTitle.style.display = "none";
@@ -319,4 +307,3 @@ async function calculateTotalPrice() {
   });
   return total;
 }
-navBarButton(auth);

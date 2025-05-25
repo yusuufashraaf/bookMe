@@ -1,4 +1,4 @@
-import { navBarButton } from "../../navBar/script/navBar.js";
+import { loadNavbar } from "../../navBar/script/navBar.js";
 import { getAllUsers } from "../../firebase.js";
 import {
   getAuth,
@@ -8,22 +8,7 @@ import {
 const nameId = document.getElementById("name");
 const emailId = document.getElementById("email");
 
-document.addEventListener("DOMContentLoaded", () => {
-  fetch("../navBar/navbar.html")
-    .then((response) => response.text())
-    .then((html) => {
-      // Fix CSS link path inside navbar.html before inserting
-      const fixedHtml = html.replace(
-        /href="([^"]*\/style\/navBar.css)"/,
-        'href="../navBar/style/navBar.css"'
-      );
 
-      document.getElementById("navbar-container").innerHTML = fixedHtml;
-
-      if (typeof navBarButton === "function") navBarButton();
-    })
-    .catch((err) => console.error("Error loading navbar:", err));
-});
 
 // Wait for Firebase Auth to get current user
 const auth = getAuth();
@@ -52,4 +37,4 @@ onAuthStateChanged(auth, async (user) => {
   }
 });
 
-navBarButton(auth);
+loadNavbar(auth);
