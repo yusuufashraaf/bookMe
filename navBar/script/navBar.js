@@ -17,7 +17,6 @@ export function navBarButton(auth) {
     if (page === "signOut") {
       await signOut(auth);
       sessionStorage.clear();
-      localStorage.clear();
       window.location.replace("../../index.html");
       return;
     }

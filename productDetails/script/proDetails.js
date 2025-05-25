@@ -43,9 +43,9 @@ document.addEventListener("DOMContentLoaded", () => {
 onAuthStateChanged(auth, async (user) => {
   if (user) {
     currentUserId = user.uid;
-     const book = await loadBookDetails(); 
+    const book = await loadBookDetails();
     if (book) {
-      await initializeWishlistButton(book); 
+      await initializeWishlistButton(book);
       currentBook = book;
       setupCartButton();
     }
@@ -261,7 +261,7 @@ async function loadRelatedBooks(category, currentId) {
 
   const container = document.querySelector(".related-books");
   container.innerHTML = "";
-  const relatedTitle = document.getElementById("related-title"); 
+  const relatedTitle = document.getElementById("related-title");
 
   let relatedCount = 0;
 
@@ -282,7 +282,7 @@ async function loadRelatedBooks(category, currentId) {
       container.appendChild(card);
     }
   });
-   if (relatedCount > 0) {
+  if (relatedCount > 0) {
     relatedTitle.style.display = "block";
   } else {
     relatedTitle.style.display = "none";
