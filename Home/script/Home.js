@@ -1,6 +1,6 @@
 // Import functions and modules
 import { getAllBooks, auth } from "../../firebase.js";
-import { loadHomeNavbar } from "../../navBar/script/navBar.js";
+import { loadNavbar } from "../../navBar/script/navBar.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
 
 
@@ -26,7 +26,7 @@ onAuthStateChanged(auth, (user) => {
 });
 
 // Load the navbar dynamically and enhance it with search bar
-loadHomeNavbar(auth).then(() => {
+loadNavbar(auth,true).then(() => {
   setupSearch();
 })
 

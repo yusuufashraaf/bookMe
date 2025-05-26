@@ -40,6 +40,12 @@ body {
   border-radius: 20px 0 0 20px;
 }
 
+.btnn:hover,
+button:active {
+  background-color: #a2b9a7 !important;
+}
+
+
 .search {
   border-radius: 20px 0 0 20px;
   border: 1px solid #a2b9a7;

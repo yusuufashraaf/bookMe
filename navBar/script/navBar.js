@@ -37,52 +37,35 @@ export function navBarButton(auth) {
   });
 }
 
-export async function loadNavbar(auth) {
+export async function loadNavbar(auth, isHome = false) {
   try {
-    const res = await fetch("../navBar/navbar.html");
+    let res = await fetch("../navBar/navbar.html");
     let html = await res.text();
+
+    // Fix relative path to navBar CSS
     html = html.replace(
       /href="([^"]*\/style\/navBar.css)"/,
       'href="../navBar/style/navBar.css"'
     );
 
+    // If it's the Home page, add search input + button
+    if (isHome) {
+      html = html.replace(
+        '<ul class="navbar-nav ms-auto">',
+        `
+          <input class="search" type="search" id="searchInput" placeholder="Search" aria-label="Search" />
+          <button class="btnn" id="searchBtn" type="submit">Search</button>
+          <ul class="navbar-nav ms-auto">
+        `
+      );
+    }
+
     document.getElementById("navbar-container").innerHTML = html;
-
-    setTimeout(() => {
-      navBarButton(auth);
-    }, 0);
-  } catch (e) {
-    console.error("Navbar load error:", e);
-  }
-}
-
-export async function loadHomeNavbar(auth) {
-  try {
-    const res = await fetch("../navBar/navbar.html");
-    let html = await res.text();    
-    // Correct the relative path to navbar CSS
-    html = html.replace(
-      /href="([^"]*\/style\/navBar.css)"/,
-      'href="../navBar/style/navBar.css"'
-    );
-    
-    // Inject search input and button into navbar
-    html = html.replace(
-      '<ul class="navbar-nav ms-auto">',
-      `
-        <input class="search" type="search" id="searchInput" placeholder="Search" aria-label="Search" />
-        <button class="btnn" id="searchBtn" type="submit">Search</button>
-        <ul class="navbar-nav ms-auto">
-      `
-    );
-
-    // Set the final navbar HTML
-    document.getElementById("navbar-container").innerHTML = html;
-
-    // Initialize navbar button and search functionality
     navBarButton(auth);
+    
+    if (isHome) setupSearch();
   } catch (error) {
     console.error("Navbar load error:", error);
   }
-};
+}
 
