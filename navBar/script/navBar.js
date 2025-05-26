@@ -62,10 +62,7 @@ export async function loadNavbar(auth, isHome = false) {
 
     document.getElementById("navbar-container").innerHTML = html;
     navBarButton(auth);
-    
-    if (isHome) setupSearch();
   } catch (error) {
     console.error("Navbar load error:", error);
   }
 }
-
